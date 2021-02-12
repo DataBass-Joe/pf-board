@@ -4,7 +4,7 @@ import VuePostgrest  from 'vue-postgrest'
 import router from './router'
 
 Vue.use(VuePostgrest, {
-  apiRoot:  'http://192.168.1.119:3000/'
+  apiRoot:  'http://pfsheet.tech:3000/'
 })
 
 

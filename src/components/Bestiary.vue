@@ -1,6 +1,12 @@
 <template>
   <div>
+    <div>
+      <button @click="offset += 1">Next Entry</button>
+      <button @click="offset -= 1" :disabled="offset - 1 < 0">Previous Entry</button>
+    </div>
+    <div>
       <span id="stat-block" v-html="pg[0]['fulltext']"></span>
+    </div>
   </div>
 </template>
 
@@ -12,13 +18,18 @@ export default {
   mixins: [pg],
   data() {
     return {
-      pgConfig: {
+      offset: 0
+    }
+  },
+  computed: {
+    pgConfig() {
+      return {
         route: 'bestiary',
         query: {select: ['id', 'name', 'fulltext']},
-        limit: 1
+        limit: 1,
+        offset: this.offset
       }
-    }
-  }, computed: {
+    },
     bestiary() {
       return this.pg
     }
@@ -30,10 +41,12 @@ export default {
 
 </script>
 
-<style>
+<style scoped>
 
-
-
+div {
+  display: flex;
+  flex-direction: column;
+}
 
 
 #stat-block {
@@ -42,74 +55,17 @@ export default {
   max-width: 50vmax;
   min-width: 50px;
   text-shadow: 2px 2px 4px #000000;
-  color:white;
-}
-h5 {
-  font-size: 16px;
-  font-weight: normal;
-  padding:0;
-  margin:1vmin;
-}
-
-
-div.heading {
-  height: 30px;
-}
-
-h1 {
-  font-size: 22px;
-}
-
-h2 {
-  font-size: 22px;
-  text-align: left;
-}
-
-h3 {
-  font-size: 16px;
-  font-weight: normal;
-}
-
-h4 {
-  text-align: justify;
-  font-size: 16px;
-  font-weight: normal;
-}
-
-p {
-  margin: 0 0 1px;
-  padding: 0 0 1px;
   color: white;
 }
 
-h6 {
 
-  margin-left: 30px;
-  font-size: 16px;
-  font-weight: normal;
-}
 
-p.alignleft {
-  margin-left: 0;
-  text-indent: 10px;
-  float: left;
-  text-align: left;
-  font-size: 18px;
-  font-weight: bold;
-  padding: 3px;
-}
+</style>
 
-p.alignright {
-  float: right;
-  text-align: right;
-  font-size: 18px;
-  font-weight: bold;
-  text-indent: 10px;
 
-  padding: 3px;
-}
+<style>
 
-li {
-  text-indent: 0;
-}
+
+
+
 </style>

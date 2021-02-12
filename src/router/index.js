@@ -7,7 +7,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/home',
-    name: 'Home',
+    name: 'sheet',
     component: Home
   },
   {
@@ -22,6 +22,12 @@ const routes = [
     path: '/bestiary',
     name: 'Bestiary',
     component: () => import(/* webpackChunkName: "about" */ '../components/Bestiary.vue')
+  },
+  {
+    path: '/sheet',
+    name: 'Sheet',
+
+    component: () => import(/* webpackChunkName: "about" */ '../views/Sheet.vue')
   }
 ]
 
