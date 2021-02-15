@@ -59,13 +59,45 @@ div {
 }
 
 
+p.alignleft {
+  margin-left: 0;
+  text-indent: 10px;
+  float: left;
+  text-align: left;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 3px;
+}
 
+p.alignright {
+  float: right;
+  text-align: right;
+  font-size: 18px;
+  font-weight: bold;
+  text-indent: 10px;
+  padding: 3px;
+}
+
+
+button {
+  background-color: rgba(255, 127, 127, 0.75);
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  transition-duration: 0.2s;
+  height: 10vmin;
+  margin-top: 1vmin;
+  width: 10vmin;
+}
+
+button:hover {
+  background-color: darkred; /* Green */
+  color: white;
+}
 </style>
 
 
-<style>
 
-
-
-
-</style>
