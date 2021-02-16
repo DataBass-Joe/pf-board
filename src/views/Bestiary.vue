@@ -1,41 +1,70 @@
 <template>
   <div>
-    <div>
-      <button @click="offset += 1">Next Entry</button>
-      <button @click="offset -= 1" :disabled="offset - 1 < 0">Previous Entry</button>
+
+    <p>Searching For: {{ message }}</p>
+
+    <input v-model="message" placeholder="search for Entries by Name Here">
+    <br>
+
+
+    <div v-if="message !== ''">
+
+      <p>Results Shown: {{ pg.length }}</p>
+      <br>
+
+
+      <span v-for="entry in pg" v-bind:key="entry.id"
+            id="stat-block">
+      <Search v-bind:entry-name="entry.name"
+              v-bind:fulltext="entry.fulltext"
+      />
+
+
+    </span>
+
     </div>
-    <div>
-      <span id="stat-block" v-html="pg[0]['fulltext']"></span>
-    </div>
+
+    <button v-on:click="offset += 30" :disabled="offset + 30 > pg.length + offset">Next</button>
+    <button @click="offset -= 30" :disabled="offset - 1 < 0">Back</button>
+
+
   </div>
 </template>
 
 <script>
 import {pg} from 'vue-postgrest'
+import Search from "@/components/Search";
 
 export default {
   name: "Bestiary",
   mixins: [pg],
   data() {
     return {
-      offset: 0
+      offset: 0,
+      message: '',
+      route: 'bestiary',
+      counter: 0
     }
   },
   computed: {
     pgConfig() {
       return {
-        route: 'bestiary',
-        query: {select: ['id', 'name', 'fulltext']},
-        limit: 1,
+        route: this.route,
+        query: {
+          select: ['name', 'id', 'fulltext'],
+          'name.ilike': '*' + this.message + '*',
+          'third_party.eq': 0
+        },
+        limit: 30,
         offset: this.offset
       }
-    },
-    bestiary() {
-      return this.pg
     }
   },
   onError(err) {
     console.log(err)
+  },
+  components: {
+    Search
   }
 }
 
@@ -54,32 +83,12 @@ p {
 
 
 #stat-block {
-  padding: 1vmin;
+  padding: .1vmin;
   text-align: left;
   max-width: 50vmax;
   min-width: 50px;
   text-shadow: 2px 2px 4px #000000;
   color: white;
-}
-
-
-p.alignleft {
-  margin-left: 0;
-  text-indent: 10px;
-  float: left;
-  text-align: left;
-  font-size: 18px;
-  font-weight: bold;
-  padding: 3px;
-}
-
-p.alignright {
-  float: right;
-  text-align: right;
-  font-size: 18px;
-  font-weight: bold;
-  text-indent: 10px;
-  padding: 3px;
 }
 
 
@@ -92,7 +101,7 @@ button {
   display: inline-block;
   font-size: 16px;
   transition-duration: 0.2s;
-  height: 10vmin;
+  height: auto;
   margin-top: 1vmin;
   width: 10vmin;
 }
@@ -101,6 +110,17 @@ button:hover {
   background-color: darkred; /* Green */
   color: white;
 }
+
+button:disabled {
+  background-color: grey;
+}
+
+input {
+  width: 20vmin;
+  margin: 1vmin 0 1vmin 0;
+}
+
+
 </style>
 
 

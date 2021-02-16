@@ -134,13 +134,30 @@ html {
   }
 }
 
-h5, div, p {
+h5, p {
   margin: 0;
   margin-block-start: 1px;
   margin-block-end: 0;
 }
 
+p.alignleft {
+  margin-left: 0;
+  text-indent: 10px;
+  float: left;
+  text-align: left;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 3px;
+}
 
+p.alignright {
+  float: right;
+  text-align: right;
+  font-size: 18px;
+  font-weight: bold;
+  text-indent: 10px;
+  padding: 3px;
+}
 
 </style>
 

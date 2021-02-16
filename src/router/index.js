@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import Bestiary from "@/views/Bestiary";
 
 Vue.use(VueRouter)
 
@@ -13,7 +14,7 @@ const routes = [
   {
     path: '/bestiary',
     name: 'Bestiary',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Bestiary.vue')
+    component: Bestiary
   },
   {
     path: '/spells',
