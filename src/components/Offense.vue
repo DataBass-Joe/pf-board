@@ -11,12 +11,13 @@
     </p>
     <p>
       <b> Melee </b>
-      {{this.weapon[0].name}} {{ makeBonus(meleeAttackBonus(strMod, bab)) }} ({{this.weapon[0].weaponDamage}}{{ makeBonus(damageBonus) }})
+      {{ this.weapon[0].name }} {{ makeBonus(meleeAttackBonus(dexMod, bab)) }}
+      ({{ this.weapon[0].diceCount }}d{{this.weapon[0].diceSize}}{{ makeBonus(damageBonus) }})
     </p>
     <p>
       <b> Ranged </b>
-      light
-      crossbow {{ makeBonus(rangedAttackBonus(dexMod, bab)) }} (1d8{{ makeBonus(damageBonus) }}/19-20)
+      {{ this.weapon[1].name }} {{ makeBonus(rangedAttackBonus(dexMod, bab)) }}
+      ({{ this.weapon[1].diceCount }}d{{this.weapon[1].diceSize}}{{ makeBonus(damageBonus) }}/x{{this.weapon[1].critMult}})
     </p>
     <p>
       <b> Special Attacks </b>
@@ -24,6 +25,8 @@
         channel positive energy ({{ channelCount }}/day, {{ channelDamage }}d6, DC {{ channelDC }}); firebolt
         (1d4+3, 8/day); touch of glory(Sp) (6/day)
       </span>
+
+      <span v-if="specialAbilities['supernaturalAbilities']['Erase From Time'] === 1">{{ makeBonus(meleeAttackBonus(dexMod, bab)) }} Erase From Time<sup>(Su)</sup> (1/day, 1d{{Math.floor(10/2)}} Rounds, DC {{revelationDC}} Fort)</span>
     </p>
     <p v-if="characterRace == 'Aasimar'">
       <b> Spell-Like Abilities</b>
@@ -35,20 +38,14 @@
     </p>
 
     <p>
+    <div v-for="(caster) in this.casterClass" v-bind:key="caster">
+      <b>{{ caster.name }} Spells <span v-if="caster.casting === 'spontanious' ">Known</span> (CL
+        {{ caster.casterLevel }})</b>
 
-    <div v-for="(spellsList, caster) in this.class[0].spellsPrepared" v-bind:key="caster">
-      <b
-          class="capitalize">{{ caster }} Spells Prepared (CL {{ casterLevel }}th)</b>
-      <br>
-
-      <div class="spells" v-for="(spells, level) in spellsList" v-bind:key="level">
-        {{ level }}:
-        <span v-for="(spell, index) in spells" v-bind:key="spell">
-                         <i>{{ spell }}</i>
-                    <span
-                        v-if="index !== spells.length - 1">, </span>
-                            </span>
-
+    <div class="spells" v-for="(spellsList, level) in caster.spellsPrepared" v-bind:key="level"><b>{{ level }}: </b>
+        <i v-for="spell, index in spellsList" v-bind:key="index">{{ spell }}<span
+            v-if="index !== spellsList.length - 1">, </span>
+        </i>
 
       </div>
 
@@ -84,8 +81,10 @@ export default {
     dexMod: Number,
     bab: Number,
     characterRace: String,
-    class: Array,
+    casterClass: Array,
     weapon: Array,
+    specialAbilities: Object,
+    revelationDC: Number
   },
   methods: {
     meleeAttackBonus(strMod, bab) {
@@ -120,6 +119,7 @@ p {
 
 div.spells {
   text-indent: 3em;
+  margin: .4vmin;
 }
 
 </style>

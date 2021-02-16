@@ -33,7 +33,7 @@
         v-bind:reflex="saves.ref"
         v-bind:will="saves.will"
         v-bind:hp="hp"
-        v-bind:con-mod="abilityMods.constitution"
+        v-bind:hp-bonus="this.hpBonus"
         v-bind:character-race="characterRace"
         v-bind:hit-dice="hitDice"
         v-bind:character-level="characterLevel"
@@ -51,9 +51,13 @@
         v-bind:str-mod="abilityMods.strength"
         v-bind:dex-mod="abilityMods.dexterity"
         v-bind:character-race="characterRace"
-        v-bind:class="this.class"
+        v-bind:caster-class="this.class"
         v-bind:weapon="this.weapon"
+        v-bind:special-abilities="classFeatures"
+        v-bind:revelation-d-c="revelationDC"
+
     />
+
 
     <hr>
 
@@ -64,7 +68,13 @@
         v-bind:ability-scores="abilityScores"
         v-bind:feats="feats"
         v-bind:skills="skills"
+        v-bind:ability-mods="abilityMods"
     />
+
+
+    <div id="buttons">
+      <button v-on:toggle="heroism"></button>
+    </div>
 
 
   </div>
@@ -100,7 +110,7 @@ export default {
       ],
 
       alignment: "CG",
-      abilityScores: {
+      pointBuy: {
         strength: 11,
         dexterity: 14,
         constitution: 12,
@@ -115,6 +125,7 @@ export default {
       type: "humanoid",
       subtype: ['human'],
       speed: 30,
+      favoredClassBonus: 1,
 
 
       class: [
@@ -125,17 +136,55 @@ export default {
           babProgression: .75,
           level: 10,
           spellsPrepared: {
-            '3rd': ['Prayer'],
-            '2nd': ['Protection from Evil, Communal x2'],
-            '1st': ['Bless x2', 'Shield of Faith x2'],
-            orisons: ['Detect Magic', 'Spark', 'Light', 'Guidance']
+            '4th (2/day)': [
+              'Invisibility, Greater'
+            ],
+            '3rd (5/day)': [
+              'Haste',
+              'Glibness',
+              'See Invisibility',
+              'Charm monster',
+              '    ?'
+            ],
+            '2nd (6/day)': [
+              'Heroism',
+              'Gallant Inspiration',
+              'Blur',
+              'Invisiblility',
+              'Heroic Fortune',
+              'Minor Image',
+              '    ?',
+              '        ?'
+            ],
+            '1st (7/day)': [
+              'Shadow Trap',
+              'Charm Person',
+              'Fabricate Disguise',
+              'Saving Finale',
+              'Hideous Laughter',
+              'Grease',
+              'Heightened Awareness',
+              'Feather Fall'
+            ],
+            Cantrips: [
+              'Dancing Lights',
+              'Detect Magic',
+              'Prestidigitation',
+              'Daze',
+              'Open/Close',
+              'Mage Hand',
+              'Lullaby',
+              'Message',
+              'Mending'
+            ]
           },
           goodSaves: {
             fort: false,
             ref: true,
             will: true
           },
-          casterLevel: 10
+          casterLevel: '10th',
+          casting: 'spontanious'
         },
         {
           name: 'Oracle',
@@ -144,17 +193,70 @@ export default {
           babProgression: .75,
           level: 10,
           spellsPrepared: {
-            '3rd': ['Prayer'],
-            '2nd': ['Protection from Evil, Communal x2'],
-            '1st': ['Bless x2', 'Shield of Faith x2'],
-            cantrips: ['Detect Magic', 'Spark', 'Light', 'Guidance']
+            '5th (4/day)': [
+              '?',
+              'Permanency'
+
+            ],
+            '4th (6/day)': [
+              'Sending',
+              'Dimensional Anchor',
+              'Threefold Aspect',
+              'Wall of Fire'
+
+            ],
+            '3rd (8/day)': [
+              'Dispel Magic',
+              'Stunning Barrier',
+              'Stone Shape',
+              'Aura Sight',
+              '?',
+              'Beacon of Luck*',
+              'Bestow Curse'
+
+            ],
+            '2nd (8/day)': [
+              ' Hold person',
+              'Silence',
+              'Grace',
+              'Resist Energy',
+              'Zone of Truth',
+              '?',
+              'Oracle\'s Burden',
+              'Scorching Ray'
+
+            ],
+            '1st (8/day)': [
+              'Detect Charm',
+              'Moment of Greatness',
+              'Murderous Command',
+              'Protection from Law',
+              'Lucky Number',
+              'Fallback Strategy',
+              'Sure casting',
+              'Ill Omen',
+              'Burning Hands'
+
+            ],
+            Orisons: [
+              'Create Water',
+              'Read Magic',
+              'Stabilize',
+              'Enhance Diplomacy',
+              'Purify Food and Drink',
+              'Mending',
+              'Vigor',
+              'Spark'
+            ]
           },
           goodSaves: {
             fort: false,
             ref: false,
             will: false
           },
-          casterLevel: 10
+          casterLevel: '10th',
+          casting: 'spontanious'
+
         }
       ],
       gestalt: true,
@@ -171,12 +273,25 @@ export default {
           weaponType: 'melee',
           critRange: 15,
           critMult: 2,
-          cost: 15,
           weight: 4,
           proficiency: 'martial',
           catagory: 'one-handed',
-          group: 'heavy blades'
-
+          group: 'heavy blades',
+          enchantment: ['+1', 'Keen', 'Holy']
+        },
+        {
+          name: 'The Furies\' Longbow',
+          diceCount: 1,
+          diceSize: 8,
+          damageType: ['slashing'],
+          weaponType: 'melee',
+          critRange: 20,
+          critMult: 3,
+          weight: 3,
+          proficiency: 'martial',
+          catagory: 'one-handed',
+          group: 'heavy blades',
+          enchantment: ['+1', 'Flaming', 'Composite']
         }
       ]
 
@@ -250,7 +365,7 @@ export default {
             totalSaves[save] = classSaves[save]
 
           }
-          totalSaves[save] = Math.floor(totalSaves[save]) + this.resistanceBonus
+          totalSaves[save] = Math.floor(totalSaves[save]) + this.resistanceBonus + this.classFeatures.extraordinaryAbilities["Archaeologist's Luck"]
         }
 
       }
@@ -290,7 +405,7 @@ export default {
 
       }
 
-      hp += this.characterLevel * this.abilityMods.constitution
+      hp += this.characterLevel * this.hpBonus
 
 
       return hp
@@ -312,7 +427,6 @@ export default {
           hitDice += classHitDice
 
 
-
         } else if (hitDice < classHitDice) {
           hitDice = classHitDice
 
@@ -325,6 +439,76 @@ export default {
 
 
       return hitDice
+    },
+
+    hpBonus() {
+      return this.abilityMods.constitution + this.favoredClassBonus
+    },
+
+//TODO This shit is horribly messy and unorganized
+    classFeatures() {
+
+      return {
+        extraordinaryAbilities: {
+          'Bardic Knowledge': this.characterLevel,
+          'Archaeologist\'s Luck': 3,
+          'Clever Explorer': Math.floor(this.characterLevel / 2),
+          'Uncanny Dodge': true,
+          'Trap Sense': 3,
+          'Lore Master': 1,
+          'Evasion': true,
+          'Oracle\'s Curse': ['Elemental Imbalance(fire)', 'Pranked'],
+          'Misforture': 1,
+          'Forture': 1
+        },
+        supernaturalAbilities: {
+          'Erase From Time': 1,
+          'Temporal Celerity': 1,
+          'Rewind Time': 1
+        },
+        spellLikeAbilities: {
+          'Cantrips': true
+        },
+        untypedAbilities: {
+          'Weapon Proficiency': ['simple weapons', 'longsword', 'rapier', 'sap', 'shortsword', 'shortbow', 'whip'],
+          'Armor Proficiency': ['light armor', 'medium armor', 'shields'],
+          'Spells': '2/3',
+          'Rogue Talents': ['Combat Training(Deft Maneuvers)', 'Combat Training(Combat Reflexes)'],
+          'Spellcasting': '3/3',
+          'Mystery': 'Time',
+          'Orisons': true,
+          'Revelation': true,
+          'Bonus Spells': {
+            '2nd': 'Ill Omen',
+            '4th': 'Oracle\'s Burden',
+            '6th': 'Bestow Curse'
+          }
+        }
+      }
+
+    },
+
+    abilityScores() {
+
+      let enchancement = 4
+
+      let level = 2
+
+      let race = 2
+
+      let tempAbilityScores = this.pointBuy
+
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      tempAbilityScores.strength += 0
+      tempAbilityScores.dexterity += enchancement
+      tempAbilityScores.constitution += 0
+      tempAbilityScores.intelligence += 0
+      tempAbilityScores.wisdom += 0
+      tempAbilityScores.charisma += enchancement + level + race
+
+      return tempAbilityScores
+
+
     },
 
 
@@ -358,7 +542,7 @@ export default {
       }
     },
     damageBonus() {
-      return this.abilityMods.strength
+      return this.abilityMods.dexterity
     },
     channelCount() {
       return 3 + this.abilityMods.charisma + 1 + 2
@@ -368,6 +552,10 @@ export default {
     },
     channelDC() {
       return Math.floor(this.classLevel / 2) + 10 + this.abilityMods.charisma
+    },
+
+    revelationDC() {
+      return 10 + Math.floor(this.characterLevel) + this.abilityMods.charisma
     }
 
   }
@@ -401,6 +589,20 @@ export default {
 
 
           for (let key = 0; key < keySize; key++) {
+
+            if (typeof myObj[i][keys[key]] == 'object') {
+
+              list += this.makeList(myObj[i][keys[key]])
+
+              if (key === keySize - 1) {
+                continue
+              }
+
+              list += ' '
+
+              continue
+
+            }
 
             list += myObj[i][keys[key]]
 
@@ -450,16 +652,15 @@ export default {
   font-size: 1.5vh;
   text-align: left;
   align-items: baseline;
-  /*background-color: #14396b;*/
   padding: 2vmin;
   background-image: url("../assets/Immogen_single.png");
-  /*background-size: cover;*/
   background-repeat: no-repeat;
   height: 90vh;
-  background-position: center;
-  background-attachment: fixed;
+  background-position: 50% 40%;
 
-  background-size: 100vmax;
+  background-size: 200vmin;
+
+  max-width: 150vmin;
 
 
 }
@@ -478,5 +679,8 @@ p {
   margin: 0;
 }
 
+.capitalize {
+  text-transform: capitalize;
+}
 
 </style>

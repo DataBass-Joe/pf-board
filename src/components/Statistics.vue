@@ -8,7 +8,7 @@
 
     <p>
         <span v-for="(score, key, index) in abilityScores" v-bind:key="index"><b
-            class="capitalize"> {{ key.substr(0, 3) }}</b> {{ score }}<span
+            class="capitalize"> {{ key.substr(0, 3) }}</b> {{ score }}({{makeBonus(abilityMods[key])}})<span
             v-if="index !== Object.keys(abilityScores).length - 1">, </span>
         </span>
     </p>
@@ -51,7 +51,8 @@ name: "Statistics",
     strMod: Number,
     dexMod: Number,
     feats: Array,
-    skills: Object
+    skills: Object,
+    abilityMods: Object
 
   },
   methods: {

@@ -48,6 +48,10 @@ div {
   flex-direction: column;
 }
 
+p {
+  margin: 0;
+}
+
 
 #stat-block {
   padding: 1vmin;

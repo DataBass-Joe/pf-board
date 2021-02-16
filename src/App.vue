@@ -5,6 +5,7 @@
       <div id="nav" v-on:scroll="handleScroll" v-bind:class="{ active: isActive }">
         <router-link to="/home">Home</router-link>
         <router-link to="/bestiary">Bestiary</router-link>
+        <router-link to="/spells">Spells</router-link>
         <router-link to="/sheet">Character Sheet</router-link>
         <router-link to="/immogen">Immogen</router-link>
       </div>
@@ -133,6 +134,11 @@ html {
   }
 }
 
+h5, div, p {
+  margin: 0;
+  margin-block-start: 1px;
+  margin-block-end: 0;
+}
 
 
 

@@ -10,7 +10,7 @@
     </p>
     <p>
       <b> hp </b>
-      {{ hp }} ({{ hitDice }} {{ conMod * characterLevel }})
+      {{ hp }} ({{ hitDice }} {{ hpBonus * characterLevel }})
     </p>
     <p>
       <b> Fort </b> +{{ fort }},
@@ -39,7 +39,7 @@ export default {
     'hp',
     'classLevel',
     'classHitDie',
-    'conMod',
+    'hpBonus',
     'characterRace',
     'hitDice',
     'characterLevel'
