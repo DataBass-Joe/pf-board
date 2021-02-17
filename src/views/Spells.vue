@@ -1,13 +1,18 @@
 <template>
   <div>
 
-    <p>Searching For: {{ message }}</p>
+    <p>Searching by Name: {{ nameSearch }}</p>
 
-    <input v-model="message" placeholder="search for Entries by Name Here">
+    <input v-model="nameSearch" placeholder="search for Entries by Name Here">
+    <br>
+
+    <p>Searching by Description: {{ descSearch }}</p>
+
+    <input v-model="descSearch" placeholder="search for Entries by Description Here">
     <br>
 
 
-    <div v-if="message !== ''">
+    <div v-if="nameSearch !== ''">
 
       <p>Results Shown: {{ pg.length }}</p>
       <br>
@@ -41,9 +46,10 @@ export default {
   data() {
     return {
       offset: 0,
-      message: '',
+      nameSearch: '',
       route: 'spell',
-      counter: 0
+      counter: 0,
+      descSearch: ''
     }
   },
   computed: {
@@ -52,9 +58,10 @@ export default {
         route: this.route,
         query: {
           select: ['*'],
-          'name.ilike': '*' + this.message + '*',
+          'name.ilike': '*' + this.nameSearch + '*',
+          'description.ilike': '*' + this.descSearch + '*'
         },
-        limit: 30,
+        // limit: 30,
         offset: this.offset
       }
     }

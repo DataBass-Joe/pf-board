@@ -73,7 +73,7 @@
 
 
     <div id="buttons">
-      <button v-on:toggle="heroism"></button>
+      <button v-on:toggle="heroism">Heroism</button>
     </div>
 
 
@@ -137,24 +137,24 @@ export default {
           level: 10,
           spellsPrepared: {
             '4th (2/day)': [
-              'Invisibility, Greater'
+              'Greater Invisibility'
             ],
             '3rd (5/day)': [
               'Haste',
               'Glibness',
               'See Invisibility',
               'Charm monster',
-              '    ?'
+              '?'
             ],
             '2nd (6/day)': [
               'Heroism',
               'Gallant Inspiration',
               'Blur',
-              'Invisiblility',
+              'Invisibility',
               'Heroic Fortune',
               'Minor Image',
-              '    ?',
-              '        ?'
+              '?',
+              '?'
             ],
             '1st (7/day)': [
               'Shadow Trap',

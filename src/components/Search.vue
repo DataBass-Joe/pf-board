@@ -2,7 +2,7 @@
 
   <div>
     <a v-on:click="toggleKey = !toggleKey">{{ entryName }}</a>
-    <span v-show="toggleKey" v-html="fulltext"></span>
+    <span v-show="toggleKey" v-html="fulltext">{{ content }}</span>
 
   </div>
 
@@ -19,7 +19,8 @@ export default {
   },
   props: {
     fulltext: String,
-    entryName: String
+    entryName: String,
+    content: String
   }
 
 }
