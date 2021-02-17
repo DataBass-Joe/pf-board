@@ -22,16 +22,16 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/Spells.vue')
   },
   {
-    path: '/sheet',
-    name: 'Sheet',
+    path: '/charlotte',
+    name: 'Charlotte',
 
-    component: () => import(/* webpackChunkName: "about" */ '../views/Sheet.vue')
+    component: () => import(/* webpackChunkName: "about" */ '@/views/Charlotte')
   },
   {
     path: '/immogen',
     name: 'Immogen',
 
-    component: () => import(/* webpackChunkName: "about" */ '../views/Immogen.vue')
+    component: () => import(/* webpackChunkName: "about" */ '@/views/Immogen')
   }
 ]
 

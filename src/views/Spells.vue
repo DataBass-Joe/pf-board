@@ -12,7 +12,7 @@
     <br>
 
 
-    <div v-if="nameSearch !== ''">
+    <div v-if="nameSearch !== '' || descSearch !== ''">
 
       <p>Results Shown: {{ pg.length }}</p>
       <br>
@@ -61,7 +61,7 @@ export default {
           'name.ilike': '*' + this.nameSearch + '*',
           'description.ilike': '*' + this.descSearch + '*'
         },
-        // limit: 30,
+        limit: 30,
         offset: this.offset
       }
     }

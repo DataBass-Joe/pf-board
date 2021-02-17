@@ -6,8 +6,9 @@
         <router-link to="/home">Home</router-link>
         <router-link to="/bestiary">Bestiary</router-link>
         <router-link to="/spells">Spells</router-link>
-        <router-link to="/sheet">Character Sheet</router-link>
+        <router-link to="/charlotte">Charlotte</router-link>
         <router-link to="/immogen">Immogen</router-link>
+
       </div>
     <router-view/>
 

@@ -10,7 +10,7 @@
          v-bind:key="level">
 
       <div v-show="toggleKey"><b>{{ level }}: </b>
-        <i v-for="spell, index in spellList" v-bind:key="index">{{ spell }}<span
+        <i v-for="(spell, index) in spellList" v-bind:key="index">{{ spell }}<span
             v-if="index !== spellList.length - 1">, </span>
         </i>
 
