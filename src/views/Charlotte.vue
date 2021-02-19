@@ -112,15 +112,19 @@ export default {
   text-align: left;
   align-items: baseline;
   padding: 2vmin;
+
   background-image: url("../assets/j-jp-.jpg");
   background-repeat: no-repeat;
-  height: 90vh;
-  background-position: 50% 40%;
-
-  background-size: 200vmin;
-
-  max-width: 150vmin;
+  background-position: center 30%;
 
 
+
+  background-attachment: fixed;
 }
+
+
+</style>
+
+<style>
+
 </style>

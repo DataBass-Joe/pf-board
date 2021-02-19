@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import Bestiary from "@/views/Bestiary";
 
 Vue.use(VueRouter)
 
@@ -12,19 +11,9 @@ const routes = [
     component: Home
   },
   {
-    path: '/bestiary',
-    name: 'Bestiary',
-    component: Bestiary
-  },
-  {
-    path: '/spells',
-    name: 'Spells',
+    path: '/search',
+    name: 'Search',
     component: () => import(/* webpackChunkName: "about" */ '../views/Search')
-  },
-  {
-    path: '/items',
-    name: 'Items',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Items')
   },
   {
     path: '/charlotte',

@@ -233,7 +233,6 @@ export default {
 
 <style scoped>
 
-
 #sheet {
   flex-direction: column;
   text-shadow: 2px 2px 4px #000000;
@@ -245,15 +244,15 @@ export default {
   padding: 2vmin;
   background-image: url("../assets/Immogen_single.png");
   background-repeat: no-repeat;
-  height: 90vh;
-  background-position: 50% 40%;
 
   background-size: 200vmin;
-
-  max-width: 150vmin;
-
+  background-position: 50% 30%;
+  background-attachment: fixed;
 
 }
 
-
 </style>
+
+
+
+

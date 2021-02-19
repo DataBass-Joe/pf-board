@@ -4,6 +4,7 @@
     <a v-on:click="toggleKey = !toggleKey">{{ entryName }}</a>
     <span v-show="toggleKey" v-html="fulltext">{{ content }}</span>
 
+
   </div>
 
 </template>

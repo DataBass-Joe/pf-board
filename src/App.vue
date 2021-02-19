@@ -4,7 +4,7 @@
 
     <div id="nav" v-on:scroll="handleScroll" v-bind:class="{ active: isActive }">
       <router-link to="/">Home</router-link>
-      <router-link to="/spells">Search</router-link>
+      <router-link to="/search">Search</router-link>
       <div class="dropdown">
         <button class="dropbtn">Character Sheets</button>
         <div class="dropdown-content">
@@ -52,13 +52,6 @@ export default {
 <style>
 
 
-.smart-scroll {
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
-  z-index: 1030;
-}
 
 .scrolled-down {
   transform: translateY(-100%);
@@ -79,14 +72,12 @@ export default {
 }
 
 html {
-  /*background-image: url("assets/j-jp-.jpg");*/
-  background-size: 100vmax;
+  background-image: url("assets/j-jp-.jpg");
   background-repeat: no-repeat;
-  background-image: linear-gradient(60deg, rgba(0, 0, 255, .25), #112e56);
-
-  background-position: center;
+  /*background-image: linear-gradient(60deg, rgba(7%, 18%, 34%, 1), rgba(0, 0, 255, .25));*/
   background-attachment: fixed;
   text-shadow: 2px 2px 4px #000000;
+
 
 }
 
@@ -96,6 +87,7 @@ html {
   color: #ffffff;
   display: flex;
   flex-direction: column;
+
   /*background-color: rgba(255, 127, 127, 0.75);*/
 }
 
@@ -136,31 +128,19 @@ html {
 }
 
 
-/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
-@media screen and (max-height: 450px) {
-  #nav {
-    padding-top: 15px;
-  }
 
-  #nav a {
-    /*font-size: 18px;*/
-  }
-}
-
-h5, p {
+h5, h1, h2, h3, h4, p {
   margin: 0;
   margin-block-start: 1px;
   margin-block-end: 0;
 }
 
 p.alignleft {
-  margin-left: 0;
-  text-indent: 10px;
   float: left;
   text-align: left;
   font-size: 18px;
   font-weight: bold;
-  padding: 3px;
+  margin-bottom: 1vmin;
 }
 
 p.alignright {
@@ -169,7 +149,6 @@ p.alignright {
   font-size: 18px;
   font-weight: bold;
   text-indent: 10px;
-  padding: 3px;
 }
 
 
@@ -246,9 +225,5 @@ p.alignright {
 
 
 
+
 </style>
-
-
-
-
-
