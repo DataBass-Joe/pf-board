@@ -1,18 +1,13 @@
 <template>
   <div>
 
-    <p>Searching by Name: {{ nameSearch }}</p>
+    <p>Searching For: {{ message }}</p>
 
-    <input v-model="nameSearch" placeholder="search for Entries by Name Here">
-    <br>
-
-    <p>Searching by Description: {{ descSearch }}</p>
-
-    <input v-model="descSearch" placeholder="search for Entries by Description Here">
+    <input v-model="message" placeholder="search for Entries by Name Here">
     <br>
 
 
-    <div v-if="nameSearch !== '' || descSearch !== ''">
+    <div v-if="message !== ''">
 
       <p>Results Shown: {{ pg.length }}</p>
       <br>
@@ -21,7 +16,7 @@
       <span v-for="entry in pg" v-bind:key="entry.id"
             id="stat-block">
       <Search v-bind:entry-name="entry.name"
-              v-bind:fulltext="entry.full_text"
+              v-bind:fulltext="entry.fulltext"
       />
 
 
@@ -41,15 +36,14 @@ import {pg} from 'vue-postgrest'
 import Search from "@/components/Search";
 
 export default {
-  name: "Spells",
+  name: "Bestiary",
   mixins: [pg],
   data() {
     return {
       offset: 0,
-      nameSearch: '',
-      route: 'spell',
-      counter: 0,
-      descSearch: ''
+      message: '',
+      route: 'item',
+      counter: 0
     }
   },
   computed: {
@@ -57,9 +51,8 @@ export default {
       return {
         route: this.route,
         query: {
-          select: ['*'],
-          'name.ilike': '*' + this.nameSearch + '*',
-          'description.ilike': '*' + this.descSearch + '*'
+          select: ['name', 'id', 'fulltext'],
+          'name.ilike': '*' + this.message + '*'
         },
         limit: 30,
         offset: this.offset
@@ -77,7 +70,6 @@ export default {
 </script>
 
 <style scoped>
-
 
 
 </style>

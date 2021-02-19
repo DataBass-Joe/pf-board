@@ -1,5 +1,5 @@
 <template>
-  <div id="sheet">
+  <div>
     <Sheet
         v-bind:character="character"
     />

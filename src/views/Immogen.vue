@@ -1,5 +1,5 @@
 <template>
-  <div id="sheet">
+  <div>
     <Sheet
         v-bind:character="character"
     />
@@ -29,6 +29,7 @@ export default {
           'Lady Luck\'s Guidance',
           'Cosmic Gate',
         ],
+        traits: ['Fate\'s Favored', 'Reactionary'],
 
         alignment: "CG",
         pointBuy: {
@@ -42,6 +43,7 @@ export default {
 
 
         race: "Human",
+        racialTraits: ['Bonus Feat', 'Skilled'],
         languages: ['Common'],
         size: "medium",
         type: "humanoid",
@@ -215,7 +217,9 @@ export default {
             group: 'heavy blades',
             enchantment: ['+1', 'Flaming', 'Composite']
           }
-        ]
+        ],
+
+        luck: 3
       }
     }
   },

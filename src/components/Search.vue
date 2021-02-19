@@ -29,10 +29,11 @@ export default {
 <style scoped>
 
 span {
-  background-color: #111456;
+  background-image: linear-gradient(180deg, rgba(0, 0, 0, .10), #112e56);
   background-blend-mode: color;
   border: solid 10px rgba(0 0 0 .5);
-  padding: 1vmin;
+  margin: .5vmin;
+  padding: .5vmin;
 }
 
 </style>

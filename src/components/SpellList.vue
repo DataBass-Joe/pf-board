@@ -1,6 +1,6 @@
 <template>
 
-  <div>
+  <div id="p">
 
     <b v-on:click="toggleKey = !toggleKey">{{ caster.name }} Spells <span
         v-if="caster.casting === 'spontanious' ">Known</span> (CL
@@ -28,7 +28,7 @@ export default {
   name: "SpellLevel",
   data() {
     return {
-      toggleKey: false
+      toggleKey: true
     }
   },
   props: {
@@ -38,5 +38,14 @@ export default {
 </script>
 
 <style scoped>
+
+.spells {
+  text-indent: 1rem;
+  margin: .5vmin;
+}
+
+b {
+  margin: .5vmin;
+}
 
 </style>

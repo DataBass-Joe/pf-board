@@ -70,58 +70,6 @@ export default {
 
 </script>
 
-<style scoped>
-
-div {
-  display: flex;
-  flex-direction: column;
-}
-
-p {
-  margin: 0;
-}
-
-
-#stat-block {
-  padding: .1vmin;
-  text-align: left;
-  max-width: 50vmax;
-  min-width: 50px;
-  text-shadow: 2px 2px 4px #000000;
-  color: white;
-}
-
-
-button {
-  background-color: rgba(255, 127, 127, 0.75);
-  border: none;
-  color: white;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  transition-duration: 0.2s;
-  height: auto;
-  margin-top: 1vmin;
-  width: 10vmin;
-}
-
-button:hover {
-  background-color: darkred; /* Green */
-  color: white;
-}
-
-button:disabled {
-  background-color: grey;
-}
-
-input {
-  width: 20vmin;
-  margin: 1vmin 0 1vmin 0;
-}
-
-
-</style>
 
 
 

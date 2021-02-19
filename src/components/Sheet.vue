@@ -88,8 +88,11 @@
                 (1d4+3, 8/day); touch of glory(Sp) (6/day)
               </span>
 
+
         <span v-if="classFeatures['supernaturalAbilities']['Erase From Time'] === 1">
-          Erase From Time<sup>(Su)</sup> (1/day, 1d{{ Math.floor(10 / 2) }} Rounds, DC {{
+          Erase From Time<sup>(Su)</sup> {{ makeBonus(meleeAttackBonus) }} (1/day, 1d{{
+            Math.floor(10 / 2)
+          }} Rounds, DC {{
             revelationDC
           }} Fort)</span>
       </p>
@@ -104,10 +107,8 @@
 
       </p>
 
-      <p>
 
       <div v-for="(caster, index) in character.class" v-bind:key="index">
-
 
         <SpellList v-bind:caster="caster"/>
 
@@ -152,10 +153,9 @@
       </p>
       <p>
         <b> Skills </b>
-        <span class="capitalize" v-for="(bonus, skill, index) in skills" v-bind:key="index">{{ skill }} +{{
-            bonus
-          }}<span
-              v-if="index !== Object.keys(this.skills).length - 1">, </span>
+        <span class="capitalize" v-for="(bonus, skill, index) in skills" v-bind:key="index">{{ skill }} {{
+            makeBonus(bonus)
+          }}<span v-if="index !== Object.keys(skills).length - 1">, </span>
         </span>
       </p>
       <p>
@@ -287,12 +287,6 @@ export default {
         }
       }
       return Math.floor(bab)
-    },
-    cmb() {
-      return this.bab + this.abilityMods.strength
-    },
-    cmd() {
-      return this.bab + this.abilityMods.strength + 10 + this.abilityMods.dexterity
     },
     saves() {
 
@@ -504,18 +498,31 @@ export default {
         diplomacy: 4 + this.abilityMods.charisma + 3
       }
     },
-    damageBonus() {
-      return this.abilityMods.dexterity
+
+    rangedAttackBonus() {
+      return this.bab + this.abilityMods.dexterity + this.character.luck
     },
-    // channelCount() {
-    //   return 3 + this.abilityMods.charisma + 1 + 2
-    // },
-    // channelDamage() {
-    //   return Math.floor((this.immogen.classLevel + 1) / 2)
-    // },
-    // channelDC() {
-    //   return Math.floor(this.immogen.classLevel / 2) + 10 + this.abilityMods.charisma
-    // },
+    meleeAttackBonus() {
+      return this.bab + this.abilityMods.dexterity + this.character.luck
+    },
+    damageBonus() {
+      return this.abilityMods.dexterity + this.character.luck
+    },
+    cmb() {
+      return this.bab + this.abilityMods.strength
+    },
+    cmd() {
+      return this.bab + this.abilityMods.strength + 10 + this.abilityMods.dexterity
+    },
+    channelCount() {
+      return 3 + this.abilityMods.charisma + 1 + 2
+    },
+    channelDamage() {
+      return Math.floor((this.character.class['Cleric'].level + 1) / 2)
+    },
+    channelDC() {
+      return Math.floor(this.character.class['Cleric'].level / 2) + 10 + this.abilityMods.charisma
+    },
 
     revelationDC() {
       return 10 + Math.floor(this.characterLevel) + this.abilityMods.charisma
@@ -543,7 +550,7 @@ hr {
 }
 
 p {
-  margin: 0;
+  margin: .5vmin;
 }
 
 .capitalize {
