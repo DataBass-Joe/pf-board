@@ -4,9 +4,7 @@
 
     <div id="nav" v-on:scroll="handleScroll" v-bind:class="{ active: isActive }">
       <router-link to="/">Home</router-link>
-      <router-link to="/bestiary">Bestiary</router-link>
-      <router-link to="/spells">Spells</router-link>
-      <router-link to="/items">Items</router-link>
+      <router-link to="/spells">Search</router-link>
       <div class="dropdown">
         <button class="dropbtn">Character Sheets</button>
         <div class="dropdown-content">
@@ -107,19 +105,20 @@ html {
   display: flex;
   flex-direction: row;
   overflow-x: hidden; /* Disable horizontal scroll */
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  margin: .5rem;
-  padding: .5rem;
+  margin: 1rem;
 }
 
 #nav * {
   font-weight: bold;
   color: #ffffff;
-  padding: 1vmin 0;
   text-decoration: none;
   text-align: center;
-  font-size: 4vmin;
+  font-size: 3vmin;
+  margin: 0 1vmin;
+  padding: .5vmin;
+
   /*display: block;*/
   /*width: 15vw;*/
 
@@ -247,53 +246,6 @@ p.alignright {
 
 
 
-div {
-  display: flex;
-  flex-direction: column;
-}
-
-p {
-  margin: 0;
-}
-
-
-#stat-block {
-  padding: .1vmin;
-  text-align: left;
-  max-width: 50vmax;
-  min-width: 50px;
-  text-shadow: 2px 2px 4px #000000;
-  color: white;
-}
-
-
-button {
-  background-color: rgba(0, 0, 255, 0.25);
-  border: none;
-  color: white;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  transition-duration: 0.2s;
-  height: auto;
-  margin-top: 1vmin;
-  width: 5rem;
-}
-
-button:hover {
-  background-color: rgba(0, 0, 255, 0.5); /* Green */
-  color: white;
-}
-
-button:disabled {
-  background-color: grey;
-}
-
-input {
-  width: 20rem;
-  margin: 1vmin 0 1vmin 0;
-}
 </style>
 
 

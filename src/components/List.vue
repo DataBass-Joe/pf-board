@@ -11,7 +11,7 @@
 <script>
 
 export default {
-  name: "Search",
+  name: "List",
   data() {
     return {
       toggleKey: false

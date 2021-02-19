@@ -40,7 +40,7 @@ export default {
 <style scoped>
 
 .spells {
-  text-indent: 1rem;
+  text-indent: 4rem;
   margin: .5vmin;
 }
 

@@ -33,7 +33,7 @@
 
 <script>
 import {pg} from 'vue-postgrest'
-import Search from "@/components/Search";
+import Search from "@/components/List";
 
 export default {
   name: "Bestiary",
