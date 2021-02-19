@@ -47,7 +47,7 @@
 
       <div id="nav">
 
-        <span @click="entry.entryID = num + 10" v-for="num in 10" v-bind:key="num">{{ num }}</span>
+<!--        <span @click="entry.entryID = num + 10" v-for="num in 10" v-bind:key="num">{{ num }}</span>-->
 
       </div>
       <div id="content">
@@ -111,7 +111,6 @@ p {
 
 
 #stat-block {
-  background-image: radial-gradient(rgba(0, 0, 0, .0), rgba(0, 0, 255, .10), rgba(0, 0, 0, .0));
   background-blend-mode: color;
   border: solid 10px rgba(0 0 0 .5);
   margin: .5vmin;

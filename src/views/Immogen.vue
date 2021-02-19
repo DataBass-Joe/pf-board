@@ -245,7 +245,7 @@ export default {
   background-image: url("../assets/Immogen_single.png");
   background-repeat: no-repeat;
 
-  background-size: 200vmin;
+  background-size: 100vmax;
   background-position: 50% 30%;
   background-attachment: fixed;
 
