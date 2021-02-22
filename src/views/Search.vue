@@ -5,7 +5,7 @@
 
       <p>Select a Source Table:</p>
 
-      <select v-model="entry.table">
+      <select v-model="searchEntry.table">
         <option disabled value="">Please select one</option>
         <option>item</option>
         <option>spell</option>
@@ -31,7 +31,7 @@
 
         <span v-for="text in pg" v-bind:key="text.id">
           <span v-bind:entry-name="text.name"
-                v-on:click="makeTab(text.name, text.id, entry.table)"
+                v-on:click="makeTab(text.name, text.id, searchEntry.table)"
           >{{ text.name }}</span>
 
         </span>
@@ -48,7 +48,6 @@
 
       <div id="nav">
 
-        <!--        <span @click="entry.entryID = num + 10" v-for="num in 10" v-bind:key="num">{{ num }}</span>-->
 
       </div>
       <div id="content">
@@ -63,6 +62,7 @@
           </button>
 
         </div>
+
 
         <FullText v-bind.sync="currentTab"/>
 
@@ -92,6 +92,10 @@ export default {
         entryID: 0,
         table: ''
       },
+      searchEntry: {
+        entryID: 0,
+        table: ''
+      },
       nameSearch: '',
       counter: 0,
       descSearch: '',
@@ -103,7 +107,7 @@ export default {
   computed: {
     pgConfig() {
       return {
-        route: this.entry.table,
+        route: this.searchEntry.table,
         query: {
           select: ['*'],
           'name.ilike': '*' + this.nameSearch + '*',
@@ -123,7 +127,16 @@ export default {
         table: table
       }
 
-      this.tabs.push(newTab);
+      let contains = this.tabs.some(elem => {
+        return JSON.stringify(newTab) === JSON.stringify(elem);
+      });
+      if (!contains) {
+
+        this.tabs.push(newTab);
+
+      }
+
+      this.currentTab = newTab
 
 
     }

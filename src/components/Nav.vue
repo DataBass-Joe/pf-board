@@ -18,11 +18,13 @@
 export default {
   name: "Nav"
 }
+
+
 </script>
 
 <style lang="scss" scoped>
 
-$width: 20rem;
+$width: 25rem;
 
 
 #nav {
@@ -33,7 +35,7 @@ $width: 20rem;
   align-items: center;
   margin: 1rem;
 
-  * {
+  a, .dropbtn, .dropdown-content {
     font-weight: bold;
     color: #ffffff;
     text-decoration: none;
@@ -67,6 +69,8 @@ $width: 20rem;
   font-family: inherit; /* Important for vertical align on mobile phones */
   margin: 0; /* Important for vertical align on mobile phones */
   width: $width;
+
+
 }
 
 
@@ -75,11 +79,21 @@ $width: 20rem;
   display: none;
   position: absolute;
   background-color: rgba(0, 0, 0, .25);
+
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.25);
   z-index: 1;
   flex-direction: column;
-  align-content: center;
+
+
+
   width: $width;
+
+  a {
+    align-self: center;
+
+
+  }
+
 
 
 }
