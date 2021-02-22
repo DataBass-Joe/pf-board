@@ -26,7 +26,6 @@ name: "Nav"
 #nav {
   background-color: rgba(0, 0, 0, .25);
   display: flex;
-  flex-direction: row;
   overflow-x: hidden; /* Disable horizontal scroll */
   justify-content: center;
   align-items: center;
@@ -37,13 +36,9 @@ name: "Nav"
   font-weight: bold;
   color: #ffffff;
   text-decoration: none;
-  text-align: center;
   font-size: 3vmin;
   margin: 0 1vmin;
-  padding: .5vmin;
-
-  /*display: block;*/
-  /*width: 15vw;*/
+  /*padding: .5vmin;*/
 
 }
 
@@ -59,15 +54,6 @@ name: "Nav"
   text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
 }
 
-
-/* Links inside the navbar */
-
-/* The dropdown container */
-.dropdown {
-  float: left;
-  overflow: hidden;
-}
-
 /* Dropdown button */
 .dropdown .dropbtn {
   font-size: 16px;
@@ -76,15 +62,11 @@ name: "Nav"
   color: white;
   background-color: rgba(0, 0, 0, .25);
   padding: 14px 16px;
-  /*background-color: inherit;*/
   font-family: inherit; /* Important for vertical align on mobile phones */
   margin: 0; /* Important for vertical align on mobile phones */
 }
 
-/* Add a red background color to navbar links on hover */
-.navbar a:hover, .dropdown:hover .dropbtn {
-  /*background-color: red;*/
-}
+
 
 /* Dropdown content (hidden by default) */
 .dropdown-content {
@@ -93,27 +75,24 @@ name: "Nav"
   background-color: rgba(0, 0, 0, .25);
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.25);
   z-index: 1;
+  flex-direction: column;
+  align-content: center;
+
 
 }
 
 /* Links inside the dropdown */
 .dropdown-content a {
-  float: none;
-  color: black;
-  text-decoration: none;
-  display: block;
-  text-align: center;
 
 }
 
 /* Add a grey background color to dropdown links on hover */
 .dropdown-content a:hover {
-  background-color: #ddd;
 }
 
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {
-  display: block;
+  display: flex;
 }
 
 
