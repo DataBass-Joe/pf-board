@@ -16,11 +16,13 @@
 
 <script>
 export default {
-name: "Nav"
+  name: "Nav"
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
+$width: 20rem;
 
 
 #nav {
@@ -30,31 +32,31 @@ name: "Nav"
   justify-content: center;
   align-items: center;
   margin: 1rem;
+
+  * {
+    font-weight: bold;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 3vmin;
+    margin: 0 1vmin;
+    /*padding: .5vmin;*/
+  }
+
+  a.router-link-exact-active {
+    color: rgb(0, 0, 0);
+    text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+
+  }
+
+  a:hover {
+    color: rgb(0, 0, 0);
+    text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+  }
 }
 
-#nav * {
-  font-weight: bold;
-  color: #ffffff;
-  text-decoration: none;
-  font-size: 3vmin;
-  margin: 0 1vmin;
-  /*padding: .5vmin;*/
-
-}
 
 
-#nav a.router-link-exact-active {
-  color: rgb(0, 0, 0);
-  text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
 
-}
-
-#nav a:hover {
-  color: rgb(0, 0, 0);
-  text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
-}
-
-/* Dropdown button */
 .dropdown .dropbtn {
   font-size: 16px;
   border: none;
@@ -64,8 +66,8 @@ name: "Nav"
   padding: 14px 16px;
   font-family: inherit; /* Important for vertical align on mobile phones */
   margin: 0; /* Important for vertical align on mobile phones */
+  width: $width;
 }
-
 
 
 /* Dropdown content (hidden by default) */
@@ -77,24 +79,17 @@ name: "Nav"
   z-index: 1;
   flex-direction: column;
   align-content: center;
+  width: $width;
 
 
 }
 
-/* Links inside the dropdown */
-.dropdown-content a {
 
-}
-
-/* Add a grey background color to dropdown links on hover */
-.dropdown-content a:hover {
-}
 
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {
   display: flex;
 }
-
 
 
 </style>
