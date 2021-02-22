@@ -1,6 +1,6 @@
 <template>
 
-  <div id="nav" v-on:scroll="handleScroll" v-bind:class="{ active: isActive }">
+  <div id="nav">
     <router-link to="/">Home</router-link>
     <router-link to="/search">Search</router-link>
     <div class="dropdown">
@@ -74,7 +74,7 @@ name: "Nav"
   border: none;
   outline: none;
   color: white;
-  background-color: rgba(0, 0, 0, .25);;
+  background-color: rgba(0, 0, 0, .25);
   padding: 14px 16px;
   /*background-color: inherit;*/
   font-family: inherit; /* Important for vertical align on mobile phones */

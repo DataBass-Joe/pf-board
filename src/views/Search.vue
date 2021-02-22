@@ -1,6 +1,5 @@
 <template>
   <div id="page">
-
     <div id="search">
 
 
@@ -31,7 +30,9 @@
 
 
         <span v-for="text in pg" v-bind:key="text.id">
-          <span v-bind:entry-name="text.name" v-on:click="entry.entryID = text.id">{{ text.name }}</span>
+          <span v-bind:entry-name="text.name"
+                v-on:click="makeTab(text.name, text.id, entry.table)"
+          >{{ text.name }}</span>
 
         </span>
 
@@ -47,12 +48,23 @@
 
       <div id="nav">
 
-<!--        <span @click="entry.entryID = num + 10" v-for="num in 10" v-bind:key="num">{{ num }}</span>-->
+        <!--        <span @click="entry.entryID = num + 10" v-for="num in 10" v-bind:key="num">{{ num }}</span>-->
 
       </div>
       <div id="content">
+        <div id="dynamic-component-demo" class="demo">
+          <button
+              v-for="tab in tabs"
+              v-bind:key="tab.name"
+              v-bind:class="['tab-button', { active: currentTab.name === tab.name }]"
+              v-on:click="currentTab = tab; entry = tab;"
+          >
+            {{ tab.name }}
+          </button>
 
-        <FullText v-bind.sync="entry"/>
+        </div>
+
+        <FullText v-bind.sync="currentTab"/>
 
 
       </div>
@@ -62,9 +74,11 @@
   </div>
 </template>
 
+
 <script>
 import FullText from "@/components/FullText";
 import {pg} from "vue-postgrest";
+
 
 export default {
   name: "Search",
@@ -75,13 +89,15 @@ export default {
   data() {
     return {
       entry: {
-        entryID: 'bestiary',
-        table: String
+        entryID: 0,
+        table: ''
       },
       nameSearch: '',
       counter: 0,
       descSearch: '',
       offset: 0,
+      tabs: [],
+      currentTab: Object
     }
   },
   computed: {
@@ -98,6 +114,21 @@ export default {
       }
     }
   },
+  methods: {
+    makeTab(name, entryId, table) {
+
+      let newTab = {
+        name: name,
+        entryID: entryId,
+        table: table
+      }
+
+      this.tabs.push(newTab);
+
+
+    }
+  }
+
 }
 
 </script>
@@ -158,5 +189,30 @@ input, select {
 
 </style>
 
+<style scoped>
+.tab-button {
+  padding: 6px 10px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  background: #f0f0f0;
+  margin-bottom: -1px;
+  margin-right: -1px;
+}
+
+.tab-button:hover {
+  background: #e0e0e0;
+}
+
+.tab-button.active {
+  background: #e0e0e0;
+}
+
+.tab {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+</style>
 
 

@@ -68,7 +68,7 @@ export default {
                 'Glibness',
                 'See Invisibility',
                 'Charm monster',
-                '?'
+                'Confusion'
               ],
               '2nd (6/day)': [
                 'Heroism',
@@ -77,8 +77,8 @@ export default {
                 'Invisibility',
                 'Heroic Fortune',
                 'Minor Image',
-                '?',
-                '?'
+                'Detect Thoughts',
+                'Mirror Image'
               ],
               '1st (7/day)': [
                 'Shadow Trap',
@@ -145,7 +145,7 @@ export default {
                 'Grace',
                 'Resist Energy',
                 'Zone of Truth',
-                '?',
+                'Visualization of the Mind',
                 'Oracle\'s Burden',
                 'Scorching Ray'
 
