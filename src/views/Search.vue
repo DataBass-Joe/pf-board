@@ -63,9 +63,9 @@
 
         </div>
 
-
-        <FullText v-bind.sync="currentTab"/>
-
+        <div v-show="tabs.length !== 0">
+          <FullText v-bind.sync="currentTab"/>
+        </div>
 
       </div>
     </div>

@@ -10,12 +10,14 @@
 <script>
 import Sheet from "@/components/Sheet";
 
+// let bonus = this.character.level
+
 export default {
   name: "immogen",
   data() {
     return {
       character: {
-        characterName: "Immogen",
+        name: "Immogen",
         feats: [
           'Defiant Luck',
           'Auspicious Birth (Retrograde)',
@@ -61,7 +63,7 @@ export default {
             level: 10,
             spellsPrepared: {
               '4th (2/day)': [
-                'Greater Invisibility'
+                'Invisibility, Greater'
               ],
               '3rd (5/day)': [
                 'Haste',
@@ -140,7 +142,7 @@ export default {
 
               ],
               '2nd (8/day)': [
-                ' Hold person',
+                'Hold person',
                 'Silence',
                 'Grace',
                 'Resist Energy',
@@ -176,7 +178,7 @@ export default {
             goodSaves: {
               fort: false,
               ref: false,
-              will: false
+              will: true
             },
             casterLevel: '10th',
             casting: 'spontanious'
@@ -184,9 +186,41 @@ export default {
           }
         ],
         gestalt: true,
-        armorBonus: 5,
-        resistanceBonus: 1,
+
+        armorClassBonuses: [
+          {
+            name: 'Armor',
+            bonus: 8,
+            touch: false,
+            flatFooted: true
+          }, {
+            name: 'deflection',
+            bonus: 2,
+            touch: true,
+            flatFooted: true
+          }, {
+            name: 'natural',
+            bonus: 1,
+            touch: false,
+            flatFooted: true
+          }, {
+            name: 'insight',
+            bonus: 1,
+            touch: true,
+            flatFooted: true
+          },
+        ],
+
+        resistanceBonus: 3,
         soloPlayer: true,
+
+
+        saveAbilityScore: {
+          fort: 'constitution',
+          ref: 'charisma',
+          will: 'wisdom'
+        },
+
 
         weapon: [
           {
@@ -201,7 +235,8 @@ export default {
             proficiency: 'martial',
             catagory: 'one-handed',
             group: 'heavy blades',
-            enchantment: ['+1', 'Keen', 'Holy']
+            enchantment: ['+2', 'Keen', 'Holy'],
+            enhancementBonus: 2
           },
           {
             name: 'The Furies\' Longbow',
@@ -215,11 +250,117 @@ export default {
             proficiency: 'martial',
             catagory: 'one-handed',
             group: 'heavy blades',
-            enchantment: ['+1', 'Flaming', 'Composite']
+            enchantment: ['+1', 'Flaming', 'Composite'],
+            enhancementBonus: 1
+
           }
         ],
 
-        luck: 3
+        skill: [
+            {
+              name: 'Acrobatics',
+              ranks: 0,
+              abilityScore: 'Dexterity',
+              bonus: 10
+            }, {
+              name: 'Appraise',
+              ranks: 0,
+              abilityScore: 'Dexterity'
+            }, {
+              name: 'Bluff',
+              ranks: 7,
+              abilityScore: 'Dexterity'
+            }, {
+              name: 'Climb',
+              ranks: 0,
+              abilityScore: 'Dexterity'
+            }, {
+              name: 'Craft',
+              ranks: 0,
+              abilityScore: 'Dexterity'
+            }, {
+              name: 'Diplomacy',
+              ranks: 7,
+              abilityScore: 'Dexterity'
+            }, {
+              name: 'Disable Device',
+              ranks: 0,
+              abilityScore: 'Dexterity'
+            }, {
+              name: 'Disguise',
+              ranks: 0,
+              abilityScore: 'Dexterity'
+            }, {
+              name: 'Escape Artist',
+              ranks: 0,
+              abilityScore: 'Dexterity'
+            }, {
+              name: 'Fly',
+              ranks: 0,
+              abilityScore: 'Dexterity'
+            }, {
+              name: 'Handle Animal',
+              ranks: 7,
+              abilityScore: 'Dexterity'
+            }, {
+              name: 'Heal',
+              ranks: 0,
+              abilityScore: 'Dexterity'
+            }, {
+              name: 'Intimidate',
+              ranks: 0,
+              abilityScore: 'Dexterity'
+            }, {
+              name: 'Knowledge',
+              ranks: 0,
+              abilityScore: 'Dexterity'
+            }, {
+              name: 'Linguistics',
+              ranks: 0,
+              abilityScore: 'Dexterity'
+            }, {
+              name: 'Perception',
+              ranks: 10,
+              abilityScore: 'Dexterity'
+            }, {
+              name: 'Perform',
+              ranks: 0,
+              abilityScore: 'Dexterity'
+            }, {
+              name: 'Ride',
+              ranks: 7,
+              abilityScore: 'Dexterity'
+            }, {
+              name: 'Sense Motive',
+              ranks: 0,
+              abilityScore: 'Dexterity'
+            }, {
+              name: 'Sleight of Hand',
+              ranks: 0,
+              abilityScore: 'Dexterity'
+            }, {
+              name: 'Spellcraft',
+              ranks: 7,
+              abilityScore: 'Dexterity'
+            }, {
+              name: 'Stealth',
+              ranks: 0,
+              abilityScore: 'Dexterity'
+            }, {
+              name: 'Survival',
+              ranks: 7,
+              abilityScore: 'Dexterity'
+            }, {
+              name: 'Swim',
+              ranks: 0,
+              abilityScore: 'Dexterity'
+            }, {
+              name: 'Use Magic Device',
+              ranks: 0,
+              abilityScore: 'Dexterity'
+            }
+          ]
+
       }
     }
   },
@@ -227,18 +368,18 @@ export default {
     Sheet
   }
 
+
 }
 </script>
 
 
-<style scoped>
+<style scoped lang="scss">
 
-#sheet {
-  flex-direction: column;
+#page {
+  display: flex;
+  flex-direction: row;
   text-shadow: 2px 2px 4px #000000;
   color: white;
-  justify-content: start;
-  font-size: 1.5vh;
   text-align: left;
   align-items: baseline;
   padding: 2vmin;
@@ -248,6 +389,7 @@ export default {
   background-size: 100vmax;
   background-position: 50% 30%;
   background-attachment: fixed;
+  justify-content: space-between;
 
 }
 

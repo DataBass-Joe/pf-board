@@ -20,6 +20,8 @@ export default {
 
 <style lang="scss">
 
+$font-size: clamp(16px, 1vw, 1.5vmin);
+
 
 
 #app {
@@ -48,16 +50,22 @@ html {
 }
 
 
-h5, h1, h2, h3, h4, p {
+h5, h1, h2, h3, h4 {
   margin: 0;
   margin-block-start: 1px;
   margin-block-end: 0;
+  font-size: $font-size;
+
+}
+
+p, span, b {
+  font-size: $font-size;
 }
 
 p.alignleft {
   float: left;
   text-align: left;
-  font-size: 18px;
+  font-size: $font-size;
   font-weight: bold;
   margin-bottom: 1vmin;
 }
@@ -65,7 +73,7 @@ p.alignleft {
 p.alignright {
   float: right;
   text-align: right;
-  font-size: 18px;
+  font-size: $font-size;
   font-weight: bold;
   text-indent: 10px;
 }

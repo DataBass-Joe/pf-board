@@ -1,167 +1,198 @@
 <template>
 
 
-  <div id="sheet">
+  <div id="page">
 
 
-    <div id="charName">
-      {{ character.name }}
-    </div>
-
-    <div id="base">
+    <div id="sheet">
 
 
-      <div> {{ character.race }} Gestalt {{ makeList(character.class, ['archetypeName', 'name', 'level']) }}</div>
+      <div id="charName">
+        {{ character.name }}
+      </div>
 
-      {{ character.alignment }} {{ character.size }} {{ character.type }}
-      ({{ makeList(character.subtype) }})
-
-
-      <p>
-        <b> Init </b> +{{ initiative }};
-        <b> Senses </b>
-        <span v-if="character.race === 'Aasimar'"> darkvision 60 ft.;</span>
-        Perception + {{ skills.perception }}
-      </p>
+      <div id="base">
 
 
-    </div>
+        <p>{{ character.race }} Gestalt {{ makeList(character.class, ['archetypeName', 'name', 'level']) }}</p>
+
+        <p>{{ character.alignment }} {{ character.size }} {{ character.type }}
+          ({{ makeList(character.subtype) }})</p>
 
 
-    <hr>
+        <p>
+          <b> Init </b> +{{ initiative }};
+          <b> Senses </b>
+          <span v-if="character.race === 'Aasimar'"> darkvision 60 ft.;</span>
+          Perception + {{ skills.perception }}
+        </p>
 
-    <div id="defense">
-      <b> DEFENSE</b>
+
+      </div>
+
 
       <hr>
 
-      <p>
-        <b> AC </b>
-        {{ armorClass }}, touch {{ touchAC }}, flat-footed
-        {{ flatFootedAC }} (+{{ character.armorBonus }} armor)
-      </p>
-      <p>
-        <b> hp </b>
-        {{ hp }} ({{ hitDice }}
-        {{ hpBonus * characterLevel }})
-      </p>
-      <p>
-        <b> Fort </b> +{{ saves.fort }},
-        <b> Ref </b> +{{ saves.ref }},
-        <b> Will </b> +{{ saves.will }}
-      </p>
-      <p v-if="character.race === 'Aasimar'">
-        <b> Resist </b>
-        acid 5, cold 5, electricity 5
-      </p>
-    </div>
+      <div id="defense">
+        <b> DEFENSE</b>
 
-    <hr>
+        <hr>
 
-    <div id="offense">
-      <b> OFFENSE</b>
+        <p>
+          <b> AC </b>
+          {{ armorClass }}, touch {{ touchAC }}, flat-footed
+          {{ flatFootedAC }} ({{ makeList(character.armorClassBonuses, ['name', 'bonus']) }})
+        </p>
+        <p>
+          <b> hp </b>
+          {{ hp }} ({{ hitDice }}
+          {{ hpBonus * characterLevel }})
+        </p>
+        <p>
+          <b> Fort </b> +{{ saves.fort }},
+          <b> Ref </b> +{{ saves.ref }},
+          <b> Will </b> +{{ saves.will }}
+        </p>
+        <p v-if="character.race === 'Aasimar'">
+          <b> Resist </b>
+          acid 5, cold 5, electricity 5
+        </p>
+      </div>
 
       <hr>
 
-      <p>
-        <b> Spd </b>
-        {{ character.speed }} ft.
-      </p>
-      <p>
-        <b> Melee </b>
-        {{ character.weapon[0].name }}
-        ({{ character.weapon[0].diceCount }}d{{ character.weapon[0].diceSize }}{{
-          makeBonus(damageBonus)
-        }})
-      </p>
-      <p>
-        <b> Ranged </b>
-        {{ character.weapon[1].name }}
-        ({{ character.weapon[1].diceCount }}d{{ character.weapon[1].diceSize }}{{
-          makeBonus(damageBonus)
-        }}/x{{ character.weapon[1].critMult }})
-      </p>
-      <p>
-        <b> Special Attacks </b>
-        <span v-if="'Cleric' in character.class">
+      <div id="offense">
+        <b> OFFENSE</b>
+
+        <hr>
+
+        <p>
+          <b> Spd </b>
+          {{ character.speed }} ft.
+        </p>
+        <p>
+          <b> Melee </b>
+          {{ character.weapon[0].name }} {{ makeBonus(meleeAttackBonus + character.weapon[0].enhancementBonus) }}
+          ({{ character.weapon[0].diceCount }}d{{ character.weapon[0].diceSize }}{{
+            makeBonus(meleeDamageBonus + character.weapon[0].enhancementBonus)
+          }}/{{ character.weapon[0].critRange }}-20<span v-if="toggle.Holy.active"> plus 2d6</span>)
+        </p>
+        <p>
+          <b> Ranged </b>
+          {{ character.weapon[1].name }} {{ makeBonus(rangedAttackBonus + character.weapon[1].enhancementBonus) }}
+          ({{ character.weapon[1].diceCount }}d{{ character.weapon[1].diceSize }}{{
+            makeBonus(rangedDamageBonus + character.weapon[1].enhancementBonus)
+          }}/x{{ character.weapon[1].critMult }})
+        </p>
+        <p>
+          <b> Special Attacks </b>
+          <span v-if="'Cleric' in character.class">
                 channel positive energy ({{ channelCount }}/day, {{ channelDamage }}d6, DC {{ channelDC }}); firebolt
                 (1d4+3, 8/day); touch of glory(Sp) (6/day)
               </span>
 
 
-        <span v-if="classFeatures['supernaturalAbilities']['Erase From Time'] === 1">
+          <span v-if="classFeatures['supernaturalAbilities']['Erase From Time'] === 1">
           Erase From Time<sup>(Su)</sup> {{ makeBonus(meleeAttackBonus) }} (1/day, 1d{{
-            Math.floor(10 / 2)
-          }} Rounds, DC {{
-            revelationDC
-          }} Fort)</span>
-      </p>
+              Math.floor(10 / 2)
+            }} Rounds, DC {{
+              revelationDC
+            }} Fort)</span>
+        </p>
 
-      <p v-if="character.race === 'Aasimar'">
+        <p v-if="character.race === 'Aasimar'">
 
-        <b> Spell-Like Abilities</b>
-        (CL {{ characterLevel }}th)
+          <b> Spell-Like Abilities</b>
+          (CL {{ characterLevel }}th)
 
-        <br>
-        1/day—<i>daylight</i>
+          <br>
+          1/day—<i>daylight</i>
 
-      </p>
+        </p>
 
 
-      <div v-for="(caster, index) in character.class" v-bind:key="index">
+        <div v-for="(caster, index) in character.class" v-bind:key="index">
 
-        <SpellList v-bind:caster="caster"/>
+          <SpellList v-bind:caster="caster" @changeSpell="changeSpell"/>
 
+        </div>
+
+
+        <p v-if="character.domains != null">
+          <b>D</b>
+
+          domain spell; <b> Domains </b>
+          <span v-for="(domain, index) in character.domains" v-bind:key="index">{{ domain }}<span
+              v-if="index !== character.domains.length - 1">, </span>
+        </span>
+        </p>
       </div>
 
 
-      <p v-if="character.domains != null">
-        <b>D</b>
-
-        domain spell; <b> Domains </b>
-        <span v-for="(domain, index) in character.domains" v-bind:key="index">{{ domain }}<span
-            v-if="index !== character.domains.length - 1">, </span>
-        </span>
-      </p>
-    </div>
-
-
-    <hr>
-
-    <div id="statistics">
-
-      <b> STATISTICS</b>
-
       <hr>
 
-      <p>
+      <div id="statistics">
+
+        <b> STATISTICS</b>
+
+        <hr>
+
+        <p>
         <span v-for="(score, key, index) in abilityScores" v-bind:key="index"><b
             class="capitalize"> {{ key.substr(0, 3) }}</b> {{ score }}({{ makeBonus(abilityMods[key]) }})<span
             v-if="index !== Object.keys(abilityScores).length - 1">, </span>
         </span>
-      </p>
-      <p>
-        <b> Base Atk </b> {{ makeBonus(bab) }};
-        <b> CMB </b> {{ makeBonus(cmb) }};
-        <b> CMD </b> {{ makeBonus(cmd) }}
-      </p>
-      <p>
-        <b> Feats </b>
-        <span v-for="(feat, index) in character.feats" v-bind:key="index">{{ feat }}<span
-            v-if="index !== character.feats.length - 1">, </span>
+        </p>
+        <p>
+          <b> Base Atk </b> {{ makeBonus(bab) }};
+          <b> CMB </b> {{ makeBonus(cmb) }};
+          <b> CMD </b> {{ cmd }}
+        </p>
+        <p>
+          <b> Feats </b>
+          <span v-for="(feat, index) in character.feats" v-bind:key="index">{{ feat }}<span
+              v-if="index !== character.feats.length - 1">, </span>
         </span>
-      </p>
-      <p>
-        <b> Skills </b>
-        <span class="capitalize" v-for="(bonus, skill, index) in skills" v-bind:key="index">{{ skill }} {{
-            makeBonus(bonus)
-          }}<span v-if="index !== Object.keys(skills).length - 1">, </span>
+        </p>
+        <p>
+          <b> Skills </b>
+          <span class="capitalize" v-for="(skill, index) in character.skill" v-bind:key="index">{{ skill.name }} {{
+              makeBonus(skill.bonus)
+            }}<span v-if="index !== character.skill.length - 1">, </span>
         </span>
-      </p>
-      <p>
-        <b> Languages </b>
-        <span v-for="language in character.languages" v-bind:key="language">{{ language }}</span>
-      </p>
+        </p>
+        <p>
+          <b> Languages </b>
+          <span v-for="language in character.languages" v-bind:key="language">{{ language }}</span>
+        </p>
+      </div>
+
+    </div>
+
+    <div id="info">
+
+      <div id="buttons">
+        <div v-for="(bonus, key) in toggle" v-bind:key="key" class="toggle" v-bind:style="{ 'background-color' : bgColor(bonus.action)}">
+          <p>{{ key }}</p>
+          <!-- Rounded switch -->
+          <label class="switch">
+            <input v-model="bonus.active" type="checkbox">
+            <span class="slider round"></span>
+          </label>
+        </div>
+      </div>
+
+      <div v-if="spellName" id="spellDesc">
+
+
+        <FullText
+            v-bind:table="'spell'"
+            v-bind:name="this.spellName"
+            @closeSpell="changeSpell"
+        />
+
+      </div>
+
     </div>
 
 
@@ -173,11 +204,56 @@
 
 <script>
 import SpellList from "@/components/SpellList";
+import FullText from "@/components/FullText";
 
 
 export default {
   name: "sheet",
+  data() {
+    return {
+      spellName: '',
+      toggle: {
+        'Heroism': {
+          type: 'Morale',
+          bonus: 2,
+          active: true,
+          to: ['Attack Rolls', 'Saving Throws', 'Skill Checks'],
+          action: 2
+        },
+        'Archeologist\'s Luck': {
+          type: 'Luck',
+          bonus: 3,
+          active: true,
+          to: ['Attack Rolls', 'Damage Rolls', 'Saving Throws', 'Skill Checks'],
+          action: 1
+        },
+        'Power Attack': {
+          active: true,
+          action: 0
+        },
+        'Two-Handing': {
+          active: true,
+          action: 0
+        },
+        'Haste': {
+          type: 'Dodge',
+          bonus: 1,
+          active: false,
+          to: ['Attack Rolls', 'Reflex Saving Throws', 'Armor Class'],
+          action: 2
+        },
+        'Deadly Aim': {
+          active: true,
+          action: 0
+        },
+        'Holy': {
+          active: false,
+          action: 0
+        }
 
+      }
+    }
+  },
   methods: {
     getAbilityMod(abilityScore) {
       return Math.floor((abilityScore - 10) / 2)
@@ -245,13 +321,72 @@ export default {
 
       return list
 
+    },
+    changeSpell(value) {
+      this.spellName = value
+    },
+    bgColor(action) {
+      if (action === 0) {
+        return 'rgba(0,0,0,.25)'
+      } else if (action === 1) {
+        return 'rgba(255,0,0,.25)'
+      } else if (action === 2) {
+        return 'rgba(0,0,255,.25)'
+      }
     }
-
   },
   components: {
-    SpellList
+    SpellList,
+    FullText
   },
   computed: {
+
+    deadlyAim() {
+      if (this.toggle["Deadly Aim"].active) {
+        return Math.floor(this.bab / 4) + 1
+      }
+      return 0
+    },
+    powerAttack() {
+      if (this.toggle["Power Attack"].active) {
+        return Math.floor(this.bab / 4) + 1
+      }
+      return 0
+    },
+
+    haste() {
+      if (this.toggle.Haste.active) {
+        return this.toggle.Haste.bonus
+      }
+      return 0
+    },
+
+
+    sizeBonus() {
+      if (this.character.size === "medium") return 0
+      return 0
+    },
+
+    classCount() {
+      return this.character.class.length
+    },
+
+    morale() {
+      if (this.toggle["Heroism"].active) {
+        return this.toggle["Heroism"].bonus
+      }
+      return 0
+    },
+    luck() {
+      if (this.toggle["Archeologist's Luck"].active) {
+        return this.toggle["Archeologist's Luck"].bonus
+      }
+      return 0
+    },
+
+    attackBonus() {
+      return this.bab + this.morale + this.luck + this.haste
+    },
 
 
     characterLevel() {
@@ -277,8 +412,7 @@ export default {
     },
     bab() {
       let bab = 0;
-      let classCount = this.character.class.length;
-      for (let i = 0; i < classCount; i++) {
+      for (let i = 0; i < this.classCount; i++) {
         let classBab = this.character.class[i].level * this.character.class[i].babProgression
         if (this.character.gestalt === false) {
           bab += classBab
@@ -296,9 +430,8 @@ export default {
         will: 0
       }
 
-      let classCount = this.character.class.length;
 
-      for (let i = 0; i < classCount; i++) {
+      for (let i = 0; i < this.classCount; i++) {
 
 
         let classSaves = {
@@ -308,6 +441,7 @@ export default {
         }
 
         for (let save in this.character.class[i].goodSaves) {
+
           if (this.character.class[i].goodSaves[save] === true) {
             classSaves[save] += 2 + (this.character.class[i].level / 2)
           } else {
@@ -321,14 +455,27 @@ export default {
             totalSaves[save] = classSaves[save]
 
           }
-          totalSaves[save] = Math.floor(totalSaves[save]) + this.character.resistanceBonus + this.classFeatures["extraordinaryAbilities"]["Archaeologist's Luck"]
+
+
         }
 
       }
 
-      totalSaves["fort"] += this.abilityMods.constitution
-      totalSaves["ref"] += this.abilityMods.dexterity
-      totalSaves["will"] += this.abilityMods.wisdom
+      for (let save in totalSaves) {
+        //add bonuses here
+        totalSaves[save] = Math.floor(totalSaves[save])
+            + this.character.resistanceBonus
+            + this.luck
+            + this.morale
+      }
+
+      for (let save in this.character.saveAbilityScore) {
+        totalSaves[save] += this.abilityMods[this.character.saveAbilityScore[save]]
+      }
+
+      totalSaves["fort"] += 0
+      totalSaves["ref"] += 0 + this.haste
+      totalSaves["will"] += 0
 
 
       return totalSaves
@@ -480,18 +627,44 @@ export default {
 
       return filledArray
     },
+
+
+    armorClassLength() {
+      return this.character.armorClassBonuses.length
+    },
+
     armorClass() {
-      return 10 + this.abilityMods.dexterity + this.character.armorBonus
+
+      let tempAC = 0
+
+
+      for (let i = 0; i < this.armorClassLength; i++) {
+        tempAC += this.character.armorClassBonuses[i].bonus
+      }
+
+
+      return 10 + this.abilityMods.dexterity + tempAC + this.haste
     },
     touchAC() {
-      return this.armorClass - this.character.armorBonus
+
+      let notTouch = 0
+
+      for (let i = 0; i < this.armorClassLength; i++) {
+        if (!this.character.armorClassBonuses[i].touch)
+          notTouch += this.character.armorClassBonuses[i].bonus
+      }
+
+
+      return this.armorClass - notTouch
     },
     flatFootedAC() {
-      return this.armorClass - this.abilityMods.dexterity
+      return this.armorClass - this.abilityMods.dexterity - this.haste
     },
+
     initiative() {
       return this.abilityMods.dexterity
     },
+
     skills() {
       return {
         perception: 2 + this.abilityMods.wisdom + 2,
@@ -500,19 +673,26 @@ export default {
     },
 
     rangedAttackBonus() {
-      return this.bab + this.abilityMods.dexterity + this.character.luck
+      return this.attackBonus + this.abilityMods.dexterity - this.deadlyAim
     },
     meleeAttackBonus() {
-      return this.bab + this.abilityMods.dexterity + this.character.luck
+      return this.attackBonus + this.abilityMods.dexterity - this.powerAttack
     },
     damageBonus() {
-      return this.abilityMods.dexterity + this.character.luck
+      return this.abilityMods.dexterity + this.luck
     },
+    rangedDamageBonus() {
+      return this.damageBonus + (this.deadlyAim * 2)
+    },
+    meleeDamageBonus() {
+      return this.damageBonus + (this.powerAttack * (2 + this.toggle["Two-Handing"].active))
+    },
+
     cmb() {
-      return this.bab + this.abilityMods.strength
+      return this.attackBonus + this.abilityMods.dexterity - this.powerAttack
     },
     cmd() {
-      return this.bab + this.abilityMods.strength + 10 + this.abilityMods.dexterity
+      return 10 + this.bab + this.abilityMods.strength + this.abilityMods.dexterity + this.haste
     },
     channelCount() {
       return 3 + this.abilityMods.charisma + 1 + 2
@@ -537,7 +717,7 @@ export default {
 </script>
 
 
-<style scoped>
+<style lang="scss" scoped>
 
 
 #charName {
@@ -545,8 +725,7 @@ export default {
 }
 
 hr {
-
-  width: 100%;
+  width: 100%
 }
 
 p {
@@ -555,5 +734,126 @@ p {
 
 .capitalize {
   text-transform: capitalize;
+}
+
+#sheet {
+
+  display: flex;
+  flex-direction: column;
+  min-width: 50vw;
+
+}
+
+#info {
+
+  display: flex;
+  flex-direction: column;
+  min-width: 30vw;
+
+
+}
+
+#buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+
+}
+
+.toggle {
+
+  display: flex;
+  background-color: rgba(0, 0, 0, .25);
+
+  margin: 1vmin;
+  padding: 1vmin;
+  align-items: center;
+
+
+}
+
+
+@media only screen and (max-width: 1100px) {
+  /* For mobile phones: */
+  [id*="page"] {
+    flex-wrap: wrap;
+  }
+
+  [id*="sheet"] {
+    width: 100%;
+  }
+
+  [id*="info"] {
+    width: 100%;
+  }
+}
+
+span {
+  width: clamp(16px, 100%, 50vmin);
+}
+
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
 }
 </style>

@@ -24,7 +24,7 @@ export default {
 
 <style lang="scss" scoped>
 
-$width: 25rem;
+$width: clamp(10vw, 35vmin, 200vmax);
 
 
 #nav {
@@ -42,6 +42,14 @@ $width: 25rem;
     font-size: 3vmin;
     margin: 0 1vmin;
     /*padding: .5vmin;*/
+
+
+  }
+
+  a {
+    align-self: center;
+    align-content: center;
+    justify-content: center;
   }
 
   a.router-link-exact-active {
@@ -56,11 +64,12 @@ $width: 25rem;
   }
 }
 
+.dropdown {
 
+}
 
 
 .dropdown .dropbtn {
-  font-size: 16px;
   border: none;
   outline: none;
   color: white;
@@ -68,8 +77,8 @@ $width: 25rem;
   padding: 14px 16px;
   font-family: inherit; /* Important for vertical align on mobile phones */
   margin: 0; /* Important for vertical align on mobile phones */
-  width: $width;
 
+  width: $width;
 
 }
 
@@ -84,9 +93,10 @@ $width: 25rem;
   z-index: 1;
   flex-direction: column;
 
-
-
   width: $width;
+  margin: 1vmin;
+
+
 
   a {
     align-self: center;
