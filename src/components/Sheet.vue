@@ -21,10 +21,11 @@
 
 
         <p>
-          <b> Init </b> +{{ initiative }};
+          <b> Init </b> +{{ initiative }} ( Temporal Celerity<sup>(Su)</sup> );
           <b> Senses </b>
           <span v-if="character.race === 'Aasimar'"> darkvision 60 ft.;</span>
-          Perception + {{ skills.perception }}
+<!--          TODO Make Skills an object, not an array-->
+<!--          Perception +-->
         </p>
 
 
@@ -41,10 +42,12 @@
         <p>
           <b> AC </b>
           {{ armorClass }}, touch {{ touchAC }}, flat-footed
-          {{ flatFootedAC }} ({{ makeList(character.armorClassBonuses, ['name', 'bonus']) }})
+          {{ flatFootedAC }} (<span @click="acToggle = !acToggle" v-show="!acToggle">...</span>
+          <span @click="acToggle = !acToggle" v-show="acToggle"
+          >{{ makeList(character.armorClassBonuses, ['name', 'bonus']) }}</span>)
         </p>
         <p>
-          <b> hp </b>
+          <b> HP </b>
           {{ hp }} ({{ hitDice }}
           {{ hpBonus * characterLevel }})
         </p>
@@ -53,9 +56,14 @@
           <b> Ref </b> +{{ saves.ref }},
           <b> Will </b> +{{ saves.will }}
         </p>
-        <p v-if="character.race === 'Aasimar'">
-          <b> Resist </b>
-          acid 5, cold 5, electricity 5
+        <!--        <p v-if="character.race === 'Aasimar'">-->
+        <!--          <b> Resist </b>-->
+        <!--          acid 5, cold 5, electricity 5-->
+        <!--        </p>-->
+        <p>
+          <b> Defensive Abilities </b>
+          <!--          TODO Automate this-->
+          <span>Trap Sense<sup>(Ex)</sup> +3, Uncanny Dodge<sup>(Ex)</sup>, Evasion<sup>(Ex)</sup></span>
         </p>
       </div>
 
@@ -70,6 +78,8 @@
           <b> Spd </b>
           {{ character.speed }} ft.
         </p>
+
+        <!--          TODO Automate this-->
         <p>
           <b> Melee </b>
           {{ character.weapon[0].name }} {{ makeBonus(meleeAttackBonus + character.weapon[0].enhancementBonus) }}
@@ -84,21 +94,64 @@
             makeBonus(rangedDamageBonus + character.weapon[1].enhancementBonus)
           }}/x{{ character.weapon[1].critMult }})
         </p>
+
+
         <p>
-          <b> Special Attacks </b>
-          <span v-if="'Cleric' in character.class">
-                channel positive energy ({{ channelCount }}/day, {{ channelDamage }}d6, DC {{ channelDC }}); firebolt
-                (1d4+3, 8/day); touch of glory(Sp) (6/day)
-              </span>
+          <b @click="specialAbilitiesToggle = !specialAbilitiesToggle"> Special Abilities </b>
 
+          <span v-show="!specialAbilitiesToggle">...</span>
 
-          <span v-if="classFeatures['supernaturalAbilities']['Erase From Time'] === 1">
-          Erase From Time<sup>(Su)</sup> {{ makeBonus(meleeAttackBonus) }} (1/day, 1d{{
-              Math.floor(10 / 2)
-            }} Rounds, DC {{
-              revelationDC
-            }} Fort)</span>
+          <span v-show="specialAbilitiesToggle">
+            <span v-if="'Cleric' in character.class">
+                  channel positive energy ({{ channelCount }}/day, {{ channelDamage }}d6, DC {{ channelDC }}); firebolt
+                  (1d4+3, 8/day); touch of glory(Sp) (6/day)
+                </span>
+
+            <span v-if="classFeatures['specialAbilities']['Cosmic Gate']">Cosmic Gate</span>
+            <span v-if="classFeatures['specialAbilities']['Defiant Luck']">, Defiant Luck (3/day)</span>
+            <span v-if="classFeatures['specialAbilities']['Inexplicable Luck']">, Inexplicable Luck (3/day)</span>
+            <span v-if="classFeatures['specialAbilities']['Black Cat']">, Black Cat (3/day)</span>
+            <span v-if="classFeatures['specialAbilities']['Hero Points']">, Hero Points (7)</span>
+          </span>
         </p>
+
+
+        <p>
+          <b @click="ExtraordinaryToggle = !ExtraordinaryToggle"> Extraordinary Abilities </b>
+
+          <span v-show="!ExtraordinaryToggle">...</span>
+
+          <span v-show="ExtraordinaryToggle">
+
+            <span @click="abilityName = 'Misfortune'" v-if="classFeatures['extraordinaryAbilities']['Misforture']">Misforture</span>
+            <span v-if="classFeatures['extraordinaryAbilities']['Forture']">, Forture</span>
+            <span v-if="classFeatures['extraordinaryAbilities']['Lore Master']">, Lore Master (1/day)</span>
+
+          </span>
+
+
+        </p>
+
+        <p>
+          <b @click="SupernaturalToggle = !SupernaturalToggle"> Supernatural Abilities </b>
+
+          <span v-show="!SupernaturalToggle">...</span>
+
+          <span v-show="SupernaturalToggle">
+
+            <span v-if="classFeatures['supernaturalAbilities']['Erase From Time']">
+            Erase From Time {{ makeBonus(meleeAttackBonus) }} (1/day, 1d{{
+                Math.floor(10 / 2)
+              }} Rounds, DC {{
+                revelationDC
+              }} Fort)</span>
+            <span v-if="classFeatures['supernaturalAbilities']['Temporal Celerity']">, Temporal Celerity</span>
+            <span v-if="classFeatures['supernaturalAbilities']['Rewind Time']">, Rewind Time (1/day)</span>
+
+          </span>
+
+        </p>
+
 
         <p v-if="character.race === 'Aasimar'">
 
@@ -145,26 +198,53 @@
         </p>
         <p>
           <b> Base Atk </b> {{ makeBonus(bab) }};
-          <b> CMB </b> {{ makeBonus(cmb) }};
+          <b> CMB </b> {{ makeBonus(cmb) }} ({{ makeBonus(deftManeuvers) }} Deft Maneuvers);
           <b> CMD </b> {{ cmd }}
         </p>
         <p>
-          <b> Feats </b>
+          <b @click="featToggle = !featToggle"> Feats </b>
+          <span v-if="featToggle">
+
           <span v-for="(feat, index) in character.feats" v-bind:key="index">{{ feat }}<span
               v-if="index !== character.feats.length - 1">, </span>
         </span>
+                    </span>
+          <span v-if="!featToggle">...</span>
+
         </p>
         <p>
-          <b> Skills </b>
-          <span class="capitalize" v-for="(skill, index) in character.skill" v-bind:key="index">{{ skill.name }} {{
+          <b @click="skillToggle = !skillToggle"> Skills </b>
+          <span v-if="skillToggle">
+          <span class="capitalize" v-for="(skill, index) in skills" v-bind:key="index">{{ skill.name }} {{
               makeBonus(skill.bonus)
             }}<span v-if="index !== character.skill.length - 1">, </span>
         </span>
+        </span>
+          <span v-if="!skillToggle">...</span>
         </p>
+
         <p>
           <b> Languages </b>
           <span v-for="language in character.languages" v-bind:key="language">{{ language }}</span>
         </p>
+
+        <p>
+          <!--          TODO Automate this-->
+          <b @click="specialQualitiesToggle = !specialQualitiesToggle"> Special Qualities </b>
+
+          <span v-show="!specialQualitiesToggle">...</span>
+
+          <span v-show="specialQualitiesToggle">
+
+            <span>Oracle's Curse<sup>(Ex)</sup> (Elemental Imbalance [Fire], Pranked)
+              , Mystery (Time)
+              , Revelations (Erase From Time<sup>(Su)</sup>, Temporal Celerity<sup>(Su)</sup>, Rewind Time<sup>(Su)</sup>, Misfortune<sup>(Ex)</sup>, Fortune<sup>(Ex)</sup>)
+              , Clever Explorer<sup>(Ex)</sup>
+            </span>
+
+          </span>
+        </p>
+
       </div>
 
     </div>
@@ -172,7 +252,8 @@
     <div id="info">
 
       <div id="buttons">
-        <div v-for="(bonus, key) in toggle" v-bind:key="key" class="toggle" v-bind:style="{ 'background-color' : bgColor(bonus.action)}">
+        <div v-for="(bonus, key) in toggle" v-bind:key="key" class="toggle"
+             v-bind:style="{ 'background-color' : bgColor(bonus.action)}">
           <p>{{ key }}</p>
           <!-- Rounded switch -->
           <label class="switch">
@@ -182,12 +263,22 @@
         </div>
       </div>
 
-      <div v-if="spellName" id="spellDesc">
+      <div v-if="spellName" class="spellDesc">
 
 
         <FullText
             v-bind:table="'spell'"
             v-bind:name="this.spellName"
+            @closeSpell="changeSpell"
+        />
+
+      </div>
+
+      <div v-if="abilityName" class="spellDesc">
+
+        <Info
+            v-bind:table="'ability'"
+            v-bind:name="this.abilityName"
             @closeSpell="changeSpell"
         />
 
@@ -205,6 +296,7 @@
 <script>
 import SpellList from "@/components/SpellList";
 import FullText from "@/components/FullText";
+import Info from "@/components/Info";
 
 
 export default {
@@ -251,13 +343,18 @@ export default {
           action: 0
         }
 
-      }
+      },
+      skillToggle: true,
+      featToggle: false,
+      acToggle: false,
+      specialAbilitiesToggle: true,
+      ExtraordinaryToggle: true,
+      SupernaturalToggle: true,
+      specialQualitiesToggle: false,
+      abilityName: ''
     }
   },
   methods: {
-    getAbilityMod(abilityScore) {
-      return Math.floor((abilityScore - 10) / 2)
-    },
     makeBonus(bonus) {
       let text = ''
       if (bonus < 0) {
@@ -336,6 +433,7 @@ export default {
     }
   },
   components: {
+    Info,
     SpellList,
     FullText
   },
@@ -572,7 +670,7 @@ export default {
         spellLikeAbilities: {
           'Cantrips': true
         },
-        untypedAbilities: {
+        specialAbilities: {
           'Weapon Proficiency': ['simple weapons', 'longsword', 'rapier', 'sap', 'shortsword', 'shortbow', 'whip'],
           'Armor Proficiency': ['light armor', 'medium armor', 'shields'],
           'Spells': '2/3',
@@ -585,7 +683,12 @@ export default {
             '2nd': 'Ill Omen',
             '4th': 'Oracle\'s Burden',
             '6th': 'Bestow Curse'
-          }
+          },
+          'Defiant Luck': 3,
+          'Black Cat': 3,
+          'Inexplicable Luck': 3,
+          'Cosmic Gate': 1,
+          'Hero Points': 7
         }
       }
 
@@ -622,7 +725,7 @@ export default {
       let score;
 
       for (score in this.abilityScores) {
-        filledArray[score] = this.getAbilityMod(this.abilityScores[score])
+        filledArray[score] = Math.floor((this.abilityScores[score] - 10) / 2)
       }
 
       return filledArray
@@ -666,10 +769,153 @@ export default {
     },
 
     skills() {
-      return {
-        perception: 2 + this.abilityMods.wisdom + 2,
-        diplomacy: 4 + this.abilityMods.charisma + 3
-      }
+
+
+      let tempSkills = [
+        {
+          name: 'Acrobatics',
+          bonus: 0,
+          abilityScore: 'dexterity',
+        }, {
+          name: 'Appraise',
+          bonus: 0,
+          abilityScore: 'intelligence'
+        }, {
+          name: 'Bluff',
+          bonus: 0,
+          abilityScore: 'charisma'
+        }, {
+          name: 'Climb',
+          bonus: 0,
+          abilityScore: 'strength'
+        }, {
+          name: 'Craft',
+          bonus: 0,
+          abilityScore: 'intelligence'
+        }, {
+          name: 'Diplomacy',
+          bonus: 0,
+          abilityScore: 'charisma'
+        }, {
+          name: 'Disable Device',
+          bonus: 0,
+          abilityScore: 'dexterity'
+        }, {
+          name: 'Disguise',
+          bonus: 0,
+          abilityScore: 'charisma'
+        }, {
+          name: 'Escape Artist',
+          bonus: 0,
+          abilityScore: 'dexterity'
+        }, {
+          name: 'Fly',
+          bonus: 0,
+          abilityScore: 'dexterity'
+        }, {
+          name: 'Handle Animal',
+          bonus: 0,
+          abilityScore: 'charisma'
+        }, {
+          name: 'Heal',
+          bonus: 0,
+          abilityScore: 'wisdom'
+        }, {
+          name: 'Intimidate',
+          bonus: 0,
+          abilityScore: 'charisma'
+        }, {
+          name: 'Knowledge',
+          bonus: 0,
+          abilityScore: 'intelligence'
+        }, {
+          name: 'Linguistics',
+          bonus: 0,
+          abilityScore: 'intelligence'
+        }, {
+          name: 'Perception',
+          bonus: 0,
+          abilityScore: 'wisdom'
+        }, {
+          name: 'Perform',
+          bonus: 0,
+          abilityScore: 'charisma'
+        }, {
+          name: 'Ride',
+          bonus: 0,
+          abilityScore: 'dexterity'
+        }, {
+          name: 'Sense Motive',
+          bonus: 0,
+          abilityScore: 'wisdom'
+        }, {
+          name: 'Sleight of Hand',
+          bonus: 0,
+          abilityScore: 'dexterity'
+        }, {
+          name: 'Spellcraft',
+          bonus: 0,
+          abilityScore: 'intelligence'
+        }, {
+          name: 'Stealth',
+          bonus: 0,
+          abilityScore: 'dexterity'
+        }, {
+          name: 'Survival',
+          bonus: 0,
+          abilityScore: 'wisdom'
+        }, {
+          name: 'Swim',
+          bonus: 0,
+          abilityScore: 'strength'
+        }, {
+          name: 'Use Magic Device',
+          bonus: 0,
+          abilityScore: 'charisma'
+        }
+      ]
+
+
+      let arrayLength = tempSkills.length
+
+      skillLoop:
+          for (let i = 0; i < arrayLength; i++) {
+            if (this.character.skill[tempSkills[i].name]) {
+
+              let skill = this.character.skill[tempSkills[i].name]
+
+              tempSkills[i].bonus += this.abilityMods[tempSkills[i].abilityScore] + this.morale + skill.ranks + this.luck
+
+              if (skill.bonus === 'Bardic Knowledge') tempSkills[i].bonus += this.character.class[0].level
+
+              if (tempSkills[i].abilityScore === 'strength') tempSkills[i].bonus += this.character.armorClassBonuses[0].armorCheckPenalty
+
+
+              for (let job in this.character.class) {
+
+                for (let cSkill in this.character.class[job].classSkills) {
+
+                  if (this.character.class[job].classSkills[cSkill] === tempSkills[i].name) {
+                    tempSkills[i].bonus += 3
+
+                    continue skillLoop;
+                  }
+                }
+              }
+
+
+            } else {
+
+              tempSkills.splice(i, 1)
+
+              arrayLength -= 1
+              i -= 1
+
+            }
+          }
+
+
+      return tempSkills
     },
 
     rangedAttackBonus() {
@@ -689,7 +935,10 @@ export default {
     },
 
     cmb() {
-      return this.attackBonus + this.abilityMods.dexterity - this.powerAttack
+      return this.attackBonus + this.abilityMods.strength - this.powerAttack
+    },
+    deftManeuvers() {
+      return this.cmb - this.abilityMods.strength + this.abilityMods.dexterity
     },
     cmd() {
       return 10 + this.bab + this.abilityMods.strength + this.abilityMods.dexterity + this.haste

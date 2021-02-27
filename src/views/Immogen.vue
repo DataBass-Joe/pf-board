@@ -30,6 +30,9 @@ export default {
           'Combat Reflexes, Extra Revelation',
           'Lady Luck\'s Guidance',
           'Cosmic Gate',
+          'Blood of Heroes',
+          'Hero\'s Fortune',
+          'Luck of Heroes'
         ],
         traits: ['Fate\'s Favored', 'Reactionary'],
 
@@ -110,7 +113,28 @@ export default {
               will: true
             },
             casterLevel: '10th',
-            casting: 'spontanious'
+            casting: 'spontanious',
+            classSkills: [
+              'Acrobatics'
+              , 'Appraise'
+              , 'Bluff'
+              , 'Climb'
+              , 'Craft'
+              , 'Diplomacy'
+              , 'Disguise'
+              , 'Escape Artist'
+              , 'Intimidate'
+              , 'Knowledge'
+              , 'Linguistics'
+              , 'Perception'
+              , 'Perform'
+              , 'Profession'
+              , 'Sense Motive'
+              , 'Sleight of Hand'
+              , 'Spellcraft'
+              , 'Stealth'
+              , 'Use Magic Device'
+            ]
           },
           {
             name: 'Oracle',
@@ -181,7 +205,19 @@ export default {
               will: true
             },
             casterLevel: '10th',
-            casting: 'spontanious'
+            casting: 'spontanious',
+            classSkills: [
+              'Craft'
+              , 'Diplomacy'
+              , 'Heal'
+              , 'Knowledge (history)'
+              , 'Knowledge (planes)'
+              , 'Knowledge (religion)'
+              , 'Profession'
+              , 'Sense Motive'
+              , 'Spellcraft'
+            ]
+
 
           }
         ],
@@ -192,7 +228,9 @@ export default {
             name: 'Armor',
             bonus: 8,
             touch: false,
-            flatFooted: true
+            flatFooted: true,
+            maxDex: 8,
+            armorCheckPenalty: -2
           }, {
             name: 'deflection',
             bonus: 2,
@@ -256,110 +294,28 @@ export default {
           }
         ],
 
-        skill: [
-            {
-              name: 'Acrobatics',
-              ranks: 0,
-              abilityScore: 'Dexterity',
-              bonus: 10
-            }, {
-              name: 'Appraise',
-              ranks: 0,
-              abilityScore: 'Dexterity'
-            }, {
-              name: 'Bluff',
-              ranks: 7,
-              abilityScore: 'Dexterity'
-            }, {
-              name: 'Climb',
-              ranks: 0,
-              abilityScore: 'Dexterity'
-            }, {
-              name: 'Craft',
-              ranks: 0,
-              abilityScore: 'Dexterity'
-            }, {
-              name: 'Diplomacy',
-              ranks: 7,
-              abilityScore: 'Dexterity'
-            }, {
-              name: 'Disable Device',
-              ranks: 0,
-              abilityScore: 'Dexterity'
-            }, {
-              name: 'Disguise',
-              ranks: 0,
-              abilityScore: 'Dexterity'
-            }, {
-              name: 'Escape Artist',
-              ranks: 0,
-              abilityScore: 'Dexterity'
-            }, {
-              name: 'Fly',
-              ranks: 0,
-              abilityScore: 'Dexterity'
-            }, {
-              name: 'Handle Animal',
-              ranks: 7,
-              abilityScore: 'Dexterity'
-            }, {
-              name: 'Heal',
-              ranks: 0,
-              abilityScore: 'Dexterity'
-            }, {
-              name: 'Intimidate',
-              ranks: 0,
-              abilityScore: 'Dexterity'
-            }, {
-              name: 'Knowledge',
-              ranks: 0,
-              abilityScore: 'Dexterity'
-            }, {
-              name: 'Linguistics',
-              ranks: 0,
-              abilityScore: 'Dexterity'
-            }, {
-              name: 'Perception',
-              ranks: 10,
-              abilityScore: 'Dexterity'
-            }, {
-              name: 'Perform',
-              ranks: 0,
-              abilityScore: 'Dexterity'
-            }, {
-              name: 'Ride',
-              ranks: 7,
-              abilityScore: 'Dexterity'
-            }, {
-              name: 'Sense Motive',
-              ranks: 0,
-              abilityScore: 'Dexterity'
-            }, {
-              name: 'Sleight of Hand',
-              ranks: 0,
-              abilityScore: 'Dexterity'
-            }, {
-              name: 'Spellcraft',
-              ranks: 7,
-              abilityScore: 'Dexterity'
-            }, {
-              name: 'Stealth',
-              ranks: 0,
-              abilityScore: 'Dexterity'
-            }, {
-              name: 'Survival',
-              ranks: 7,
-              abilityScore: 'Dexterity'
-            }, {
-              name: 'Swim',
-              ranks: 0,
-              abilityScore: 'Dexterity'
-            }, {
-              name: 'Use Magic Device',
-              ranks: 0,
-              abilityScore: 'Dexterity'
-            }
-          ]
+        skill: {
+          'Bluff': {ranks: 9},
+          'Climb': {ranks: 1},
+          'Diplomacy': {ranks: 10},
+          'Disable Device': {ranks: 6},
+          'Disguise': {ranks: 7},
+          'Intimidate': {ranks: 7},
+          'Knowledge':
+              {
+                ranks: 0,
+                bonus: 'Bardic Knowledge'
+              },
+          'Linguistics': {ranks: 1},
+          'Perception': {ranks: 10},
+          'Ride': {ranks: 7},
+          'Sense Motive': {ranks: 7},
+          'Sleight of Hand': {ranks: 7},
+          'Spellcraft': {ranks: 7},
+          'Stealth': {ranks: 10},
+          'Survival': {ranks: 7},
+          'Use Magic Device': {ranks: 1}
+        }
 
       }
     }
@@ -367,8 +323,6 @@ export default {
   components: {
     Sheet
   }
-
-
 }
 </script>
 
