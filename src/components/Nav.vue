@@ -8,6 +8,8 @@
       <div class="dropdown-content">
         <router-link to="/charlotte">Charlotte</router-link>
         <router-link to="/immogen">Immogen</router-link>
+        <router-link to="/john">John</router-link>
+
       </div>
     </div>
   </div>

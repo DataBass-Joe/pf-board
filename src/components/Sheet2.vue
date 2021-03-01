@@ -14,14 +14,15 @@
       <div id="base">
 
 
-        <p>{{ character.race }} Gestalt {{ makeList(character.class, ['archetypeName', 'name', 'level']) }}</p>
+        <p>{{ character.race }} <span v-if="character.gestalt">Gestalt</span>
+          {{ makeList(character.class, ['archetypeName', 'name', 'level']) }}</p>
 
         <p>{{ character.alignment }} {{ character.size }} {{ character.type }}
           ({{ makeList(character.subtype) }})</p>
 
 
         <p>
-          <b> Init </b> +{{ initiative }} ( Temporal Celerity<sup>(Su)</sup> );
+          <b> Init </b> +{{ initiative }};
           <b> Senses </b>
           <span v-if="character.race === 'Aasimar'"> darkvision 60 ft.;</span>
           <!--          TODO Make Skills an object, not an array-->
@@ -108,16 +109,6 @@
           <span v-show="!specialAbilitiesToggle">...</span>
 
           <span v-show="specialAbilitiesToggle">
-            <span v-if="'Cleric' in character.class">
-                  channel positive energy ({{ channelCount }}/day, {{ channelDamage }}d6, DC {{ channelDC }}); firebolt
-                  (1d4+3, 8/day); touch of glory(Sp) (6/day)
-                </span>
-
-            <span v-if="classFeatures['specialAbilities']['Cosmic Gate']">Cosmic Gate</span>
-            <span v-if="classFeatures['specialAbilities']['Defiant Luck']">, Defiant Luck (3/day)</span>
-            <span v-if="classFeatures['specialAbilities']['Inexplicable Luck']">, Inexplicable Luck (3/day)</span>
-            <span v-if="classFeatures['specialAbilities']['Black Cat']">, Black Cat (3/day)</span>
-            <span @click="abilityName = 'Hero Points'" v-if="classFeatures['specialAbilities']['Hero Points']">, Hero Points (7)</span>
           </span>
         </p>
 
@@ -128,10 +119,6 @@
           <span v-show="!ExtraordinaryToggle">...</span>
 
           <span v-show="ExtraordinaryToggle">
-
-            <span @click="abilityName = 'Misfortune'" v-if="classFeatures['extraordinaryAbilities']['Misfortune']">Misfortune</span>
-            <span @click="abilityName = 'Fortune'" v-if="classFeatures['extraordinaryAbilities']['Fortune']">, Fortune</span>
-            <span @click="abilityName = 'Lore Master'" v-if="classFeatures['extraordinaryAbilities']['Lore Master']">, Lore Master (1/day)</span>
 
           </span>
 
@@ -145,14 +132,6 @@
 
           <span v-show="SupernaturalToggle">
 
-            <span @click="abilityName = 'Erase From Time'" v-if="classFeatures['supernaturalAbilities']['Erase From Time']">
-            Erase From Time {{ makeBonus(meleeAttackBonus) }} (1/day, 1d{{
-                Math.floor(10 / 2)
-              }} Rounds, DC {{
-                revelationDC
-              }} Fort)</span>
-            <span @click="abilityName = 'Temporal Celerity'" v-if="classFeatures['supernaturalAbilities']['Temporal Celerity']">, Temporal Celerity</span>
-            <span @click="abilityName = 'Rewind Time'" v-if="classFeatures['supernaturalAbilities']['Rewind Time']">, Rewind Time (1/day)</span>
 
           </span>
 
@@ -172,7 +151,7 @@
 
         <div v-for="(caster, index) in character.class" v-bind:key="index">
 
-          <SpellList v-bind:caster="caster" @changeSpell="changeSpell"/>
+          <SpellList v-if="caster.casting" v-bind:caster="caster" @changeSpell="changeSpell"/>
 
         </div>
 
@@ -204,7 +183,7 @@
         </p>
         <p>
           <b> Base Atk </b> {{ makeBonus(bab) }};
-          <b> CMB </b> {{ makeBonus(cmb) }} ({{ makeBonus(deftManeuvers) }} Deft Maneuvers);
+          <b> CMB </b> {{ makeBonus(cmb) }};
           <b> CMD </b> {{ cmd }}
         </p>
         <p>
@@ -242,14 +221,9 @@
 
           <span v-show="specialQualitiesToggle">
 
-            <span>Oracle's Curse<sup>(Ex)</sup> (Elemental Imbalance [Fire], Pranked)
-              , Mystery (Time)
-              , Revelations (Erase From Time<sup>(Su)</sup>
-              , Temporal Celerity<sup>(Su)</sup>
-              , Rewind Time<sup>(Su)</sup>
-              , Misfortune<sup>(Ex)</sup>
-              , Fortune<sup>(Ex)</sup>)
-              , Clever Explorer<sup>(Ex)</sup>
+            <span>
+
+
             </span>
 
           </span>
@@ -322,13 +296,6 @@ export default {
           active: true,
           to: ['Attack Rolls', 'Saving Throws', 'Skill Checks'],
           action: 2
-        },
-        'Archeologist\'s Luck': {
-          type: 'Luck',
-          bonus: 3,
-          active: true,
-          to: ['Attack Rolls', 'Damage Rolls', 'Saving Throws', 'Skill Checks'],
-          action: 1
         },
         'Power Attack': {
           active: true,
@@ -491,7 +458,7 @@ export default {
       return 0
     },
     luck() {
-      if (this.toggle["Archeologist's Luck"].active) {
+      if (this.toggle["Archeologist's Luck"]) if (this.toggle["Archeologist's Luck"].active) {
         return this.toggle["Archeologist's Luck"].bonus
       }
       return 0
@@ -660,55 +627,6 @@ export default {
     hpBonus() {
       return this.abilityMods.constitution + this.character.favoredClassBonus
     },
-
-//TODO This shit is horribly messy and unorganized
-    classFeatures() {
-
-      return {
-        extraordinaryAbilities: {
-          'Bardic Knowledge': this.characterLevel,
-          'Archaeologist\'s Luck': 3,
-          'Clever Explorer': Math.floor(this.characterLevel / 2),
-          'Uncanny Dodge': true,
-          'Trap Sense': 3,
-          'Lore Master': 1,
-          'Evasion': true,
-          'Oracle\'s Curse': ['Elemental Imbalance(fire)', 'Pranked'],
-          'Misfortune': 1,
-          'Fortune': 1
-        },
-        supernaturalAbilities: {
-          'Erase From Time': 1,
-          'Temporal Celerity': 1,
-          'Rewind Time': 1
-        },
-        spellLikeAbilities: {
-          'Cantrips': true
-        },
-        specialAbilities: {
-          'Weapon Proficiency': ['simple weapons', 'longsword', 'rapier', 'sap', 'shortsword', 'shortbow', 'whip'],
-          'Armor Proficiency': ['light armor', 'medium armor', 'shields'],
-          'Spells': '2/3',
-          'Rogue Talents': ['Combat Training(Deft Maneuvers)', 'Combat Training(Combat Reflexes)'],
-          'Spellcasting': '3/3',
-          'Mystery': 'Time',
-          'Orisons': true,
-          'Revelation': true,
-          'Bonus Spells': {
-            '2nd': 'Ill Omen',
-            '4th': 'Oracle\'s Burden',
-            '6th': 'Bestow Curse'
-          },
-          'Defiant Luck': 3,
-          'Black Cat': 3,
-          'Inexplicable Luck': 3,
-          'Cosmic Gate': 1,
-          'Hero Points': 7
-        }
-      }
-
-    },
-
 
     abilityScores() {
 

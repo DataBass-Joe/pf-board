@@ -2,14 +2,14 @@
 
   <div>
 
-    <a href="javascript:void(0)" class="closebtn" v-on:click="$emit('closeSpell', '')">&times;</a>
+    <a href="javascript:void(0)" class="closebtn" v-on:click="$emit('closeInfo', '')">&times;</a>
 
 
     <span  v-for="entry in this.pg" v-bind:key="entry.id"
            id="stat-block">
 
           <span>
-            <h1>entry.name</h1>
+            <h1>{{ entry.name }}</h1>
             {{entry.description}}
           </span>
 
