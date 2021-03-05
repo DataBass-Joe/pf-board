@@ -44,7 +44,7 @@ export default {
             'name.ilike': this.name
           }
         },
-        limit: 30,
+        limit: 30
       }
 
     }

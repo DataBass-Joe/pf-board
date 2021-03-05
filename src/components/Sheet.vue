@@ -223,7 +223,7 @@
           <span v-if="skillToggle">
           <span class="capitalize" v-for="(skill, index) in skills" v-bind:key="index">{{ skill.name }} {{
               makeBonus(skill.bonus)
-            }}<span v-if="index !== character.skill.length - 1">, </span>
+            }}<span v-if="index !== skills.length - 1">, </span>
         </span>
         </span>
           <span v-if="!skillToggle">...</span>
@@ -905,6 +905,7 @@ export default {
 
               if (tempSkills[i].abilityScore === 'strength') tempSkills[i].bonus += this.character.armorClassBonuses[0].armorCheckPenalty
 
+              if (tempSkills[i].name === 'Perception')  tempSkills[i].bonus += Math.floor(this.characterLevel/2) + 2
 
               for (let job in this.character.class) {
 

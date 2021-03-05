@@ -313,7 +313,6 @@ export default {
           'Sleight of Hand': {ranks: 7},
           'Spellcraft': {ranks: 7},
           'Stealth': {ranks: 10},
-          'Survival': {ranks: 7},
           'Use Magic Device': {ranks: 1}
         }
 
