@@ -1,13 +1,17 @@
-
 <template>
   <svg
       class="line-chart"
       :viewBox="viewBox"
   >
-    <g transform="translate(0, 10)">
-      <path
+    <g :data="series">
+      <g :fill="fill"></g>
+      <rect
           class="line-chart__line"
-          :d="line"
+          :x="x"
+          :y="y"
+          :width="width"
+          :height="height"
+
       />
     </g>
   </svg>
@@ -15,6 +19,7 @@
 
 <script>
 import * as d3 from 'd3';
+
 export default {
   name: 'LineChart',
   props: {
@@ -27,42 +32,56 @@ export default {
       type: Number,
     },
     height: {
-      height: 270,
+      default: 270,
       type: Number,
     }
   },
   data() {
     return {
       padding: 60,
+      margin: {top: 10, right: 10, bottom: 20, left: 40}
     };
   },
   computed: {
-    rangeX() {
-      const width = this.width - this.padding;
-      return [0, width];
+
+    series() {
+      return d3.stack()
+          .keys(Object.keys(this.data[0]))(this.data)
+          .map(d => (d.forEach(v => v.key = d.key), d))
     },
-    rangeY() {
-      const height = this.height - this.padding;
-      return [0, height];
+    x() {
+      const x = d3.scaleBand()
+          .domain(d3.range(this.data.length))
+          .range([this.margin.left, this.width - this.margin.right])
+          .padding(0.1)
+
+      let xCalc = (d) => x(d.name)
+
+      return xCalc(this.data)
+
     },
-    path() {
-      const x = d3.scaleLinear().range(this.rangeX);
-      const y = d3.scaleLinear().range(this.rangeY);
-      d3.axisLeft().scale(x);
-      d3.axisTop().scale(y);
-      x.domain(d3.extent(this.data, (d, i) => i));
-      y.domain([0, d3.max(this.data, d => d)]);
-      return d3.line()
-          .x((d, i) => x(i))
-          .y(d => y(d));
+    y() {
+      const y = d3.scaleLinear()
+          .domain([0, d3.max(this.series, d => d3.max(d, d => d[1]))])
+          .rangeRound([this.height - this.margin.bottom, this.margin.top])
+
+      let yCalc = d => y(d[1])
+
+      return yCalc(this.data)
     },
-    line() {
-      return this.path(this.data);
+    color() {
+      return d3.scaleOrdinal()
+          .domain(this.series.map(d => d.key))
+          .range(d3.schemeSpectral[this.series.length])
+          .unknown("#ccc")
     },
     viewBox() {
       return `0 0 ${this.width} ${this.height}`;
+    },
+    fill()  {
+      return (d => this.color(d.key))
     }
-  },
+  }
 };
 </script>
 
@@ -70,11 +89,15 @@ export default {
 <style lang="sass">
 .line-chart
   margin: 25px
+
   &__line
     fill: none
     stroke: #76BF8A
     stroke-width: 3px
 
 svg
-  background-color: rgba(0,0,0,.25)
+  background-color: rgba(0, 0, 0, .25)
+
+g
+  background-color: rgba(255, 183, 0, .5)
 </style>

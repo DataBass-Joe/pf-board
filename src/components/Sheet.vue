@@ -289,7 +289,7 @@
         <FullText
             v-bind:table="'spell'"
             v-bind:name="this.spellName"
-            @closeSpell="changeSpell"
+            @closeSpell="closeInfo"
         />
 
       </div>
@@ -431,6 +431,11 @@ export default {
       return list
 
     },
+
+    closeInfo() {
+      this.spellName = null
+    },
+
     changeSpell(value) {
       this.spellName = value
     },

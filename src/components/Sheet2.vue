@@ -14,15 +14,14 @@
       <div id="base">
 
 
-        <p>{{ character.race }} <span v-if="character.gestalt">Gestalt</span>
-          {{ makeList(character.class, ['archetypeName', 'name', 'level']) }}</p>
+        <p>{{ character.race }} Gestalt {{ makeList(character.class, ['archetypeName', 'name', 'level']) }}</p>
 
         <p>{{ character.alignment }} {{ character.size }} {{ character.type }}
           ({{ makeList(character.subtype) }})</p>
 
 
         <p>
-          <b> Init </b> +{{ initiative }};
+          <b> Init </b> +{{ initiative }} ( Temporal Celerity<sup>(Su)</sup> );
           <b> Senses </b>
           <span v-if="character.race === 'Aasimar'"> darkvision 60 ft.;</span>
           <!--          TODO Make Skills an object, not an array-->
@@ -109,6 +108,16 @@
           <span v-show="!specialAbilitiesToggle">...</span>
 
           <span v-show="specialAbilitiesToggle">
+            <span v-if="'Cleric' in character.class">
+                  channel positive energy ({{ channelCount }}/day, {{ channelDamage }}d6, DC {{ channelDC }}); firebolt
+                  (1d4+3, 8/day); touch of glory(Sp) (6/day)
+                </span>
+
+            <span v-if="computedList.classFeatures['specialAbilities']['Cosmic Gate']">Cosmic Gate</span>
+            <span v-if="computedList.classFeatures['specialAbilities']['Defiant Luck']">, Defiant Luck (3/day)</span>
+            <span v-if="computedList.classFeatures['specialAbilities']['Inexplicable Luck']">, Inexplicable Luck (3/day)</span>
+            <span v-if="computedList.classFeatures['specialAbilities']['Black Cat']">, Black Cat (3/day)</span>
+            <span @click="abilityName = 'Hero Points'" v-if="computedList.classFeatures['specialAbilities']['Hero Points']">, Hero Points (7)</span>
           </span>
         </p>
 
@@ -119,6 +128,10 @@
           <span v-show="!ExtraordinaryToggle">...</span>
 
           <span v-show="ExtraordinaryToggle">
+
+            <span @click="abilityName = 'Misfortune'" v-if="computedList.classFeatures['extraordinaryAbilities']['Misfortune']">Misfortune</span>
+            <span @click="abilityName = 'Fortune'" v-if="computedList.classFeatures['extraordinaryAbilities']['Fortune']">, Fortune</span>
+            <span @click="abilityName = 'Lore Master'" v-if="computedList.classFeatures['extraordinaryAbilities']['Lore Master']">, Lore Master (1/day)</span>
 
           </span>
 
@@ -132,6 +145,14 @@
 
           <span v-show="SupernaturalToggle">
 
+            <span @click="abilityName = 'Erase From Time'" v-if="computedList.classFeatures['supernaturalAbilities']['Erase From Time']">
+            Erase From Time {{ makeBonus(meleeAttackBonus) }} (1/day, 1d{{
+                Math.floor(10 / 2)
+              }} Rounds, DC {{
+                revelationDC
+              }} Fort)</span>
+            <span @click="abilityName = 'Temporal Celerity'" v-if="computedList.classFeatures['supernaturalAbilities']['Temporal Celerity']">, Temporal Celerity</span>
+            <span @click="abilityName = 'Rewind Time'" v-if="computedList.classFeatures['supernaturalAbilities']['Rewind Time']">, Rewind Time (1/day)</span>
 
           </span>
 
@@ -151,7 +172,7 @@
 
         <div v-for="(caster, index) in character.class" v-bind:key="index">
 
-          <SpellList v-if="caster.casting" v-bind:caster="caster" @changeSpell="changeSpell"/>
+          <SpellList v-bind:caster="caster" @changeSpell="changeSpell"/>
 
         </div>
 
@@ -183,7 +204,7 @@
         </p>
         <p>
           <b> Base Atk </b> {{ makeBonus(bab) }};
-          <b> CMB </b> {{ makeBonus(cmb) }};
+          <b> CMB </b> {{ makeBonus(cmb) }} ({{ makeBonus(deftManeuvers) }} Deft Maneuvers);
           <b> CMD </b> {{ cmd }}
         </p>
         <p>
@@ -202,7 +223,7 @@
           <span v-if="skillToggle">
           <span class="capitalize" v-for="(skill, index) in skills" v-bind:key="index">{{ skill.name }} {{
               makeBonus(skill.bonus)
-            }}<span v-if="index !== character.skill.length - 1">, </span>
+            }}<span v-if="index !== skills.length - 1">, </span>
         </span>
         </span>
           <span v-if="!skillToggle">...</span>
@@ -221,9 +242,14 @@
 
           <span v-show="specialQualitiesToggle">
 
-            <span>
-
-
+            <span>Oracle's Curse<sup>(Ex)</sup> (Elemental Imbalance [Fire], Pranked)
+              , Mystery (Time)
+              , Revelations (Erase From Time<sup>(Su)</sup>
+              , Temporal Celerity<sup>(Su)</sup>
+              , Rewind Time<sup>(Su)</sup>
+              , Misfortune<sup>(Ex)</sup>
+              , Fortune<sup>(Ex)</sup>)
+              , Clever Explorer<sup>(Ex)</sup>
             </span>
 
           </span>
@@ -263,7 +289,7 @@
         <FullText
             v-bind:table="'spell'"
             v-bind:name="this.spellName"
-            @closeSpell="changeSpell"
+            @closeSpell="closeInfo"
         />
 
       </div>
@@ -296,6 +322,13 @@ export default {
           active: true,
           to: ['Attack Rolls', 'Saving Throws', 'Skill Checks'],
           action: 2
+        },
+        'Archeologist\'s Luck': {
+          type: 'Luck',
+          bonus: 3,
+          active: true,
+          to: ['Attack Rolls', 'Damage Rolls', 'Saving Throws', 'Skill Checks'],
+          action: 1
         },
         'Power Attack': {
           active: true,
@@ -398,6 +431,11 @@ export default {
       return list
 
     },
+
+    closeInfo() {
+      this.spellName = null
+    },
+
     changeSpell(value) {
       this.spellName = value
     },
@@ -458,7 +496,7 @@ export default {
       return 0
     },
     luck() {
-      if (this.toggle["Archeologist's Luck"]) if (this.toggle["Archeologist's Luck"].active) {
+      if (this.toggle["Archeologist's Luck"].active) {
         return this.toggle["Archeologist's Luck"].bonus
       }
       return 0
@@ -823,6 +861,7 @@ export default {
 
               if (tempSkills[i].abilityScore === 'strength') tempSkills[i].bonus += this.character.armorClassBonuses[0].armorCheckPenalty
 
+              if (tempSkills[i].name === 'Perception')  tempSkills[i].bonus += Math.floor(this.characterLevel/2) + 2
 
               for (let job in this.character.class) {
 
@@ -891,7 +930,8 @@ export default {
     }
   },
   props: {
-    character: Object
+    character: Object,
+    computedList: Object
 
   }
 }

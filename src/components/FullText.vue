@@ -1,14 +1,19 @@
 <template>
 
-  <div>
+  <div id="stat-block">
 
-    <a href="javascript:void(0)" class="closebtn" v-on:click="$emit('closeSpell', '')">&times;</a>
+    <a href="javascript:void(0)" v-bind:class="{ bestiary: isBestiary}" class="closebtn" v-on:click="$emit('closeSpell', {
+        name: name,
+        entryID: entryID,
+        table: table
+      })">&times;</a>
 
 
-    <span  v-for="entry in this.pg" v-bind:key="entry.id"
-          id="stat-block">
+    <span v-for="entry in this.pg" v-bind:key="entry.id">
 
           <span v-html="entry.fulltext"></span>
+      <br>
+      <span id="right">Source: {{ entry.source }}</span>
 
     </span>
 
@@ -26,7 +31,10 @@ export default {
   props: {
     entryID: Number,
     table: String,
-    name: String
+    name: String,
+    source: String,
+    alternateNameForm: String,
+    thirdParty: Number
   },
   data() {
     return {
@@ -43,10 +51,17 @@ export default {
             'id.eq': this.entryID,
             'name.ilike': this.name
           }
+
         },
         limit: 30
       }
 
+    },
+    isBestiary() {
+      if (this.table === 'bestiary') {
+        return true
+      }
+      return false
     }
   },
 
@@ -58,20 +73,27 @@ export default {
 div {
   background-color: rgba(0, 0, 0, .25);
   padding: 1vmin;
-  margin: 1vmin;
-
-}
-
-h4 {
 
 }
 
 .closebtn {
   position: relative;
+  z-index: 30;
   float: right;
+  right: clamp(16px, 1vw, 1.5vmin);
   font-size: 36px;
   color: white;
   text-decoration: none;
+  align-self: flex-end;
+}
+
+.bestiary {
+  top: clamp(32px, 1vw, 1.5vmin);
+}
+
+#right {
+  display: flex;
+  flex-direction: row-reverse;
 }
 
 </style>

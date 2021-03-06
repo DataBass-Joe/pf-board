@@ -51,6 +51,40 @@ html {
 }
 
 
+
+h1 {
+  font-size: 22;
+}
+h2 {
+  font-size: 22;
+  text-align:left;
+}
+h3 {
+  font-size: 16;
+  font-weight: normal;
+}
+h4 {
+  text-align: justify;
+  font-size: 16;
+  font-weight: normal;
+}
+p {
+  padding-top: 0px;
+  padding-right: 0px;
+  padding-bottom: 1px;
+  padding-left: 0px;
+}
+h5 {
+  font-size: 16px;
+  font-weight: normal;
+}
+
+h6 {
+  font-size: 16px;
+  font-weight: normal;
+}
+
+
 h5, h1, h2, h3, h4 {
   margin: 0;
   margin-block-start: 1px;
@@ -79,5 +113,9 @@ p.alignright {
   text-indent: 10px;
 }
 
+.heading p.alignleft{
+  font-size: clamp(24px, 1.5vw, 2.025vmin);
+  height: 100%;
+}
 
 </style>
