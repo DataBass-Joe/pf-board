@@ -63,7 +63,7 @@ export default {
             archetypeName: ['Archeologist'],
             hitDie: 8,
             babProgression: .75,
-            level: 10,
+            level: 11,
             spellsPrepared: {
               '4th (2/day)': [
                 'Invisibility, Greater'
@@ -112,7 +112,7 @@ export default {
               ref: true,
               will: true
             },
-            casterLevel: '10th',
+            casterLevel: '11th',
             casting: 'spontanious',
             classSkills: [
               'Acrobatics'
@@ -141,7 +141,7 @@ export default {
             archetypeName: ['Dual-Cursed'],
             hitDie: 8,
             babProgression: .75,
-            level: 10,
+            level: 11,
             spellsPrepared: {
               '5th (4/day)': [
                 'Slay Living',
@@ -204,7 +204,7 @@ export default {
               ref: false,
               will: true
             },
-            casterLevel: '10th',
+            casterLevel: '11th',
             casting: 'spontanious',
             classSkills: [
               'Craft'
@@ -297,7 +297,7 @@ export default {
         skill: {
           'Bluff': {ranks: 9},
           'Climb': {ranks: 1},
-          'Diplomacy': {ranks: 10},
+          'Diplomacy': {ranks: 11},
           'Disable Device': {ranks: 6},
           'Disguise': {ranks: 7},
           'Intimidate': {ranks: 7},
@@ -307,12 +307,12 @@ export default {
                 bonus: 'Bardic Knowledge'
               },
           'Linguistics': {ranks: 1},
-          'Perception': {ranks: 10},
+          'Perception': {ranks: 11},
           'Ride': {ranks: 7},
           'Sense Motive': {ranks: 7},
           'Sleight of Hand': {ranks: 7},
           'Spellcraft': {ranks: 7},
-          'Stealth': {ranks: 10},
+          'Stealth': {ranks: 11},
           'Use Magic Device': {ranks: 1}
         }
 

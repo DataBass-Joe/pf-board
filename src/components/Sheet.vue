@@ -529,16 +529,7 @@ export default {
 
     },
     bab() {
-      let bab = 0;
-      for (let i = 0; i < this.classCount; i++) {
-        let classBab = this.character.class[i].level * this.character.class[i].babProgression
-        if (this.character.gestalt === false) {
-          bab += classBab
-        } else if (bab < classBab) {
-          bab = classBab
-        }
-      }
-      return Math.floor(bab)
+      return 7
     },
     saves() {
 
