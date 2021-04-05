@@ -613,14 +613,14 @@ export default {
           type: 'Morale',
           bonus: 2,
           active: true,
-          to: ['Attack Rolls', 'Saving Throws', 'Skill Checks'],
+          rollType: ['Attack Rolls', 'Saving Throws', 'Skill Checks'],
           action: 2
         },
         'Archeologist\'s Luck': {
           type: 'Luck',
           bonus: 4,
           active: true,
-          to: ['Attack Rolls', 'Damage Rolls', 'Saving Throws', 'Skill Checks'],
+          rollType: ['Attack Rolls', 'Damage Rolls', 'Saving Throws', 'Skill Checks'],
           action: 1
         },
         'Power Attack': {
@@ -635,7 +635,7 @@ export default {
           type: 'Dodge',
           bonus: 1,
           active: false,
-          to: ['Attack Rolls', 'Reflex Saving Throws', 'Armor Class'],
+          rollType: ['Attack Rolls', 'Reflex Saving Throws', 'Armor Class'],
           action: 2
         },
         'Deadly Aim': {
@@ -1185,6 +1185,7 @@ export default {
     revelationDC() {
       return 10 + Math.floor(this.characterLevel) + this.abilityMods.charisma
     }
+
   },
   mounted() {
 
@@ -1276,6 +1277,11 @@ export default {
       } else if (action === 2) {
         return 'rgba(0,0,255,.25)'
       }
+    },
+
+    modifyRoll(modifier) {
+      this.cmd = this.cmd + modifier
+
     }
   }
 
