@@ -21,7 +21,7 @@
 
 
         <p>
-          <b> Init </b> +{{ initiative }} ( Temporal Celerity<sup>(Su)</sup> );
+          <b> Init </b> +{{ rollBonus.initiative }} ( Temporal Celerity<sup>(Su)</sup> );
           <b> Senses </b>
           <span v-if="this.character.race === 'Aasimar'"> darkvision 60 ft.;</span>
           <!--          TODO Make Skills an object, not an array-->
@@ -289,7 +289,7 @@ import FullText from "@/components/FullText";
 import Info from "@/components/Info";
 
 export default {
-  name: "immogen",
+  name: "oldJohn",
   components: {SpellList, FullText, Info},
   data() {
     return {
@@ -607,7 +607,6 @@ export default {
 
         }
       ],
-
       toggle: {
         'Heroism': {
           type: 'Morale',
@@ -624,10 +623,12 @@ export default {
           action: 1
         },
         'Power Attack': {
+          type: 'Untyped',
           active: true,
           action: 0
         },
         'Two-Handing': {
+          type: 'Untyped',
           active: true,
           action: 0
         },
@@ -639,239 +640,521 @@ export default {
           action: 2
         },
         'Deadly Aim': {
+          type: 'Untyped',
           active: true,
           action: 0
         },
         'Holy': {
+          type: 'Untyped',
           active: false,
           action: 0
         },
         'Weapon of Awe': {
+          type: 'Sacred',
           active: false,
+          rollType: ['Weapon Damage Rolls'],
           action: 2
         },
         'Good Hope': {
+          type: 'Morale',
           active: false,
           bonus: 2,
           action: 2
         }
 
       },
+
       spellName: '',
-      skillToggle: true,
-      featToggle: false,
-      acToggle: false,
-      specialAbilitiesToggle: true,
-      ExtraordinaryToggle: true,
-      SupernaturalToggle: true,
-      specialQualitiesToggle: false,
-      defensiveAbilitiesToggle: true,
+
+      listToggle: {
+        skill: true,
+        feat: false,
+        ac: false,
+        specialAbilities: true,
+        extraordinaryAbilities: true,
+        supernaturalAbilities: true,
+        specialQualities: false,
+        defensiveAbilities: true
+      },
+
       abilityName: ''
     }
   },
   computed: {
 
+    rollBonus() {
+      return {
+        attackBonus() {
+          return this.bab + this.morale + this.luck + this.haste
+        },
+        meleeAttackBonus() {
+          return this.attackBonus + this.abilityMods.dexterity - this.powerAttack
+        },
+        rangedAttackBonus() {
+          return this.attackBonus + this.abilityMods.dexterity - this.deadlyAim
+        },
 
-    deadlyAim() {
-      if (this.toggle["Deadly Aim"].active) {
-        return Math.floor(this.bab / 4) + 1
+        damageBonus() {
+          return this.abilityMods.dexterity + this.luck
+        },
+        rangedDamageBonus() {
+          return this.damageBonus + (this.deadlyAim * 2)
+        },
+        meleeDamageBonus() {
+          return this.damageBonus + (this.powerAttack * (2 + this.toggle["Two-Handing"].active))
+        },
+
+        cmb() {
+          return this.attackBonus + this.abilityMods.strength - this.powerAttack
+        },
+        deftManeuvers() {
+          return this.cmb - this.abilityMods.strength + this.abilityMods.dexterity
+        },
+
+        saves() {
+
+          let totalSaves = {
+            fort: 0,
+            ref: 0,
+            will: 0
+          }
+
+
+          for (let i = 0; i < this.classCount; i++) {
+
+
+            let classSaves = {
+              fort: 0,
+              ref: 0,
+              will: 0
+            }
+
+            for (let save in this.character.class[i].goodSaves) {
+
+              if (this.character.class[i].goodSaves[save] === true) {
+                classSaves[save] += 2 + (this.character.class[i].level / 2)
+              } else {
+                classSaves[save] += this.character.class[i].level / 3
+              }
+
+              if (this.character.gestalt === false) {
+                totalSaves[save] += classSaves[save]
+
+              } else if (totalSaves[save] < classSaves[save]) {
+                totalSaves[save] = classSaves[save]
+
+              }
+
+
+            }
+
+          }
+
+          for (let save in totalSaves) {
+            //add bonuses here
+            totalSaves[save] = Math.floor(totalSaves[save])
+                + this.character.resistanceBonus
+                + this.luck
+                + this.morale
+          }
+
+          for (let save in this.character.saveAbilityScore) {
+            totalSaves[save] += this.abilityMods[this.character.saveAbilityScore[save]]
+          }
+
+          totalSaves["fort"] += 0
+          totalSaves["ref"] += 0 + this.haste
+          totalSaves["will"] += 0
+
+
+          return totalSaves
+
+        },
+
+        skills() {
+
+
+          let tempSkills = [
+            {
+              name: 'Acrobatics',
+              bonus: 0,
+              abilityScore: 'dexterity',
+            }, {
+              name: 'Appraise',
+              bonus: 0,
+              abilityScore: 'intelligence'
+            }, {
+              name: 'Bluff',
+              bonus: 0,
+              abilityScore: 'charisma'
+            }, {
+              name: 'Climb',
+              bonus: 0,
+              abilityScore: 'strength'
+            }, {
+              name: 'Craft',
+              bonus: 0,
+              abilityScore: 'intelligence'
+            }, {
+              name: 'Diplomacy',
+              bonus: 0,
+              abilityScore: 'charisma'
+            }, {
+              name: 'Disable Device',
+              bonus: Math.floor(this.characterLevel / 2) + 2,
+              abilityScore: 'dexterity'
+            }, {
+              name: 'Disguise',
+              bonus: 0,
+              abilityScore: 'charisma'
+            }, {
+              name: 'Escape Artist',
+              bonus: 0,
+              abilityScore: 'dexterity'
+            }, {
+              name: 'Fly',
+              bonus: 0,
+              abilityScore: 'dexterity'
+            }, {
+              name: 'Handle Animal',
+              bonus: 0,
+              abilityScore: 'charisma'
+            }, {
+              name: 'Heal',
+              bonus: 0,
+              abilityScore: 'wisdom'
+            }, {
+              name: 'Intimidate',
+              bonus: 0,
+              abilityScore: 'charisma'
+            }, {
+              name: 'Knowledge',
+              bonus: 0,
+              abilityScore: 'intelligence'
+            }, {
+              name: 'Linguistics',
+              bonus: 0,
+              abilityScore: 'intelligence'
+            }, {
+              name: 'Perception',
+              bonus: 0,
+              abilityScore: 'wisdom'
+            }, {
+              name: 'Perform',
+              bonus: 0,
+              abilityScore: 'charisma'
+            }, {
+              name: 'Ride',
+              bonus: 0,
+              abilityScore: 'dexterity'
+            }, {
+              name: 'Sense Motive',
+              bonus: 0,
+              abilityScore: 'wisdom'
+            }, {
+              name: 'Sleight of Hand',
+              bonus: 0,
+              abilityScore: 'dexterity'
+            }, {
+              name: 'Spellcraft',
+              bonus: 0,
+              abilityScore: 'intelligence'
+            }, {
+              name: 'Stealth',
+              bonus: 3,
+              abilityScore: 'dexterity'
+            }, {
+              name: 'Survival',
+              bonus: 0,
+              abilityScore: 'wisdom'
+            }, {
+              name: 'Swim',
+              bonus: 0,
+              abilityScore: 'strength'
+            }, {
+              name: 'Use Magic Device',
+              bonus: 0,
+              abilityScore: 'charisma'
+            }
+          ]
+
+
+          let arrayLength = tempSkills.length
+
+          skillLoop:
+              for (let i = 0; i < arrayLength; i++) {
+                if (this.character.skill[tempSkills[i].name]) {
+
+                  let skill = this.character.skill[tempSkills[i].name]
+
+                  tempSkills[i].bonus += this.abilityMods[tempSkills[i].abilityScore] + this.morale + skill.ranks + this.luck
+
+                  if (skill.bonus === 'Bardic Knowledge') tempSkills[i].bonus += this.character.class[0].level
+
+                  if (tempSkills[i].abilityScore === 'strength') tempSkills[i].bonus += this.character.armorClassBonuses[0].armorCheckPenalty
+
+                  if (tempSkills[i].name === 'Perception') tempSkills[i].bonus += Math.floor(this.characterLevel / 2) + 2
+
+                  for (let job in this.character.class) {
+
+                    for (let cSkill in this.character.class[job].classSkills) {
+
+                      if (this.character.class[job].classSkills[cSkill] === tempSkills[i].name) {
+                        tempSkills[i].bonus += 3
+
+                        continue skillLoop;
+                      }
+                    }
+                  }
+
+
+                } else {
+
+                  tempSkills.splice(i, 1)
+
+                  arrayLength -= 1
+                  i -= 1
+
+                }
+              }
+
+
+          return tempSkills
+        },
+
+        initiative() {
+          return this.abilityMods.dexterity
+        },
+
+
       }
-      return 0
     },
-    powerAttack() {
-      if (this.toggle["Power Attack"].active) {
-        return Math.floor(this.bab / 4) + 1
+
+    bonusModifier() {
+      return {
+        deadlyAim() {
+          if (this.toggle["Deadly Aim"].active) {
+            return Math.floor(this.bab / 4) + 1
+          }
+          return 0
+        },
+        powerAttack() {
+          if (this.toggle["Power Attack"].active) {
+            return Math.floor(this.bab / 4) + 1
+          }
+          return 0
+        },
+        haste() {
+          if (this.toggle.Haste.active) {
+            return this.toggle.Haste.bonus
+          }
+          return 0
+        },
+        morale() {
+          if (this.toggle["Heroism"].active) {
+            return this.toggle["Heroism"].bonus
+          }
+          if (this.toggle["Good Hope"].active) {
+            return this.toggle["Good Hope"].bonus
+          }
+          return 0
+        },
+        luck() {
+          if (this.toggle["Archeologist's Luck"].active) {
+            return this.toggle["Archeologist's Luck"].bonus
+          }
+          return 0
+        },
+
+
       }
-      return 0
     },
 
-    haste() {
-      if (this.toggle.Haste.active) {
-        return this.toggle.Haste.bonus
+    statBonus() {
+      return {
+        sizeBonus() {
+          if (this.character.size === "medium") return 0
+          return 0
+        },
+        hpBonus() {
+          return this.abilityMods.constitution + this.character.favoredClassBonus
+        },
+        abilityMods() {
+          let filledArray = {};
+
+          let score;
+
+          for (score in this.abilityScores) {
+            filledArray[score] = Math.floor((this.abilityScores[score] - 10) / 2)
+          }
+
+          return filledArray
+        },
+
       }
-      return 0
     },
 
 
-    sizeBonus() {
-      if (this.character.size === "medium") return 0
-      return 0
+    stat() {
+
+      return {
+        characterLevel() {
+
+          let level = 0;
+
+          for (let job in this.character.class) {
+
+            let characterClass = this.character.class[job];
+
+            let classLevel = characterClass.level
+
+            if (this.character.gestalt === false) {
+              level += classLevel
+
+            } else if (level < classLevel) {
+              level = classLevel
+            }
+          }
+
+          return level
+
+        },
+
+        bab() {
+          return Math.floor(this.characterLevel * .75)
+        },
+
+        hp() {
+
+          let hp = 0;
+
+          for (let job in this.character.class) {
+
+            let classHP = 0;
+
+            let characterClass = this.character.class[job];
+
+
+            if (this.character.soloPlayer) {
+              classHP = characterClass.hitDie * characterClass.level;
+            } else {
+              classHP = characterClass.hitDie
+                  + ((characterClass.level - 1) * Math.ceil((characterClass.hitDie + 1) / 2))
+            }
+
+            if (this.character.gestalt === false) {
+              hp += classHP
+
+            } else if (hp < classHP) {
+              hp = classHP
+            }
+
+          }
+
+          hp += this.characterLevel * this.hpBonus
+
+
+          return hp
+        },
+        hitDice() {
+
+          let hitDice = '';
+
+          for (let job in this.character.class) {
+
+            let classHitDice = '';
+
+            let characterClass = this.character.class[job];
+
+            classHitDice = characterClass.level + 'd' + characterClass.hitDie
+
+
+            if (this.character.gestalt === false) {
+              hitDice += classHitDice
+
+
+            } else if (hitDice < classHitDice) {
+              hitDice = classHitDice
+
+              hitDice += ' + '
+
+            }
+
+
+          }
+
+
+          return hitDice
+        },
+        abilityScores() {
+
+          let enchancement = 4
+
+          let level = 2
+
+          let race = 2
+
+          let tempAbilityScores = this.character.pointBuy
+
+          // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+          tempAbilityScores.strength += 0
+          tempAbilityScores.dexterity += enchancement
+          tempAbilityScores.constitution += enchancement - 2
+          tempAbilityScores.intelligence += 0
+          tempAbilityScores.wisdom += enchancement - 2
+          tempAbilityScores.charisma += enchancement + level + race
+
+          return tempAbilityScores
+
+
+        },
+
+
+        armorClass() {
+
+          let tempAC = 0
+
+
+          for (let i = 0; i < this.armorClassLength; i++) {
+            tempAC += this.character.armorClassBonuses[i].bonus
+          }
+
+
+          return 10 + this.abilityMods.dexterity + tempAC + this.haste
+        },
+        touchAC() {
+
+          let notTouch = 0
+
+          for (let i = 0; i < this.armorClassLength; i++) {
+            if (!this.character.armorClassBonuses[i].touch)
+              notTouch += this.character.armorClassBonuses[i].bonus
+          }
+
+
+          return this.armorClass - notTouch
+        },
+        flatFootedAC() {
+          return this.armorClass - this.abilityMods.dexterity - this.haste
+        },
+
+
+        cmd() {
+          return 10 + this.bab + this.abilityMods.strength + this.abilityMods.dexterity + this.haste
+        },
+
+
+      }
     },
+
 
     classCount() {
       return this.character.class.length
     },
-
-    morale() {
-      if (this.toggle["Heroism"].active) {
-        return this.toggle["Heroism"].bonus
-      }
-      if (this.toggle["Good Hope"].active) {
-        return this.toggle["Good Hope"].bonus
-      }
-      return 0
-    },
-    luck() {
-      if (this.toggle["Archeologist's Luck"].active) {
-        return this.toggle["Archeologist's Luck"].bonus
-      }
-      return 0
+    armorClassLength() {
+      return this.character.armorClassBonuses.length
     },
 
-    attackBonus() {
-      return this.bab + this.morale + this.luck + this.haste
-    },
-
-
-    characterLevel() {
-
-      let level = 0;
-
-      for (let job in this.character.class) {
-
-        let characterClass = this.character.class[job];
-
-        let classLevel = characterClass.level
-
-        if (this.character.gestalt === false) {
-          level += classLevel
-
-        } else if (level < classLevel) {
-          level = classLevel
-        }
-      }
-
-      return level
-
-    },
-    bab() {
-      return Math.floor(this.characterLevel * .75)
-    },
-    saves() {
-
-      let totalSaves = {
-        fort: 0,
-        ref: 0,
-        will: 0
-      }
-
-
-      for (let i = 0; i < this.classCount; i++) {
-
-
-        let classSaves = {
-          fort: 0,
-          ref: 0,
-          will: 0
-        }
-
-        for (let save in this.character.class[i].goodSaves) {
-
-          if (this.character.class[i].goodSaves[save] === true) {
-            classSaves[save] += 2 + (this.character.class[i].level / 2)
-          } else {
-            classSaves[save] += this.character.class[i].level / 3
-          }
-
-          if (this.character.gestalt === false) {
-            totalSaves[save] += classSaves[save]
-
-          } else if (totalSaves[save] < classSaves[save]) {
-            totalSaves[save] = classSaves[save]
-
-          }
-
-
-        }
-
-      }
-
-      for (let save in totalSaves) {
-        //add bonuses here
-        totalSaves[save] = Math.floor(totalSaves[save])
-            + this.character.resistanceBonus
-            + this.luck
-            + this.morale
-      }
-
-      for (let save in this.character.saveAbilityScore) {
-        totalSaves[save] += this.abilityMods[this.character.saveAbilityScore[save]]
-      }
-
-      totalSaves["fort"] += 0
-      totalSaves["ref"] += 0 + this.haste
-      totalSaves["will"] += 0
-
-
-      return totalSaves
-
-    },
-    hp() {
-
-      let hp = 0;
-
-      for (let job in this.character.class) {
-
-        let classHP = 0;
-
-        let characterClass = this.character.class[job];
-
-
-        if (this.character.soloPlayer) {
-          classHP = characterClass.hitDie * characterClass.level;
-        } else {
-          classHP = characterClass.hitDie
-              + ((characterClass.level - 1) * Math.ceil((characterClass.hitDie + 1) / 2))
-        }
-
-        if (this.character.gestalt === false) {
-          hp += classHP
-
-        } else if (hp < classHP) {
-          hp = classHP
-        }
-
-      }
-
-      hp += this.characterLevel * this.hpBonus
-
-
-      return hp
-    },
-    hitDice() {
-
-      let hitDice = '';
-
-      for (let job in this.character.class) {
-
-        let classHitDice = '';
-
-        let characterClass = this.character.class[job];
-
-        classHitDice = characterClass.level + 'd' + characterClass.hitDie
-
-
-        if (this.character.gestalt === false) {
-          hitDice += classHitDice
-
-
-        } else if (hitDice < classHitDice) {
-          hitDice = classHitDice
-
-          hitDice += ' + '
-
-        }
-
-
-      }
-
-
-      return hitDice
-    },
-
-    hpBonus() {
-      return this.abilityMods.constitution + this.character.favoredClassBonus
-    },
 
 //TODO This shit is horribly messy and unorganized
     classFeatures() {
@@ -923,261 +1206,13 @@ export default {
     },
 
 
-    abilityScores() {
-
-      let enchancement = 4
-
-      let level = 2
-
-      let race = 2
-
-      let tempAbilityScores = this.character.pointBuy
-
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      tempAbilityScores.strength += 0
-      tempAbilityScores.dexterity += enchancement
-      tempAbilityScores.constitution += enchancement - 2
-      tempAbilityScores.intelligence += 0
-      tempAbilityScores.wisdom += enchancement - 2
-      tempAbilityScores.charisma += enchancement + level + race
-
-      return tempAbilityScores
-
-
-    },
-
-
-    abilityMods() {
-      let filledArray = {};
-
-      let score;
-
-      for (score in this.abilityScores) {
-        filledArray[score] = Math.floor((this.abilityScores[score] - 10) / 2)
-      }
-
-      return filledArray
-    },
-
-
-    armorClassLength() {
-      return this.character.armorClassBonuses.length
-    },
-
-    armorClass() {
-
-      let tempAC = 0
-
-
-      for (let i = 0; i < this.armorClassLength; i++) {
-        tempAC += this.character.armorClassBonuses[i].bonus
-      }
-
-
-      return 10 + this.abilityMods.dexterity + tempAC + this.haste
-    },
-    touchAC() {
-
-      let notTouch = 0
-
-      for (let i = 0; i < this.armorClassLength; i++) {
-        if (!this.character.armorClassBonuses[i].touch)
-          notTouch += this.character.armorClassBonuses[i].bonus
-      }
-
-
-      return this.armorClass - notTouch
-    },
-    flatFootedAC() {
-      return this.armorClass - this.abilityMods.dexterity - this.haste
-    },
-
-    initiative() {
-      return this.abilityMods.dexterity
-    },
-
-    skills() {
-
-
-      let tempSkills = [
-        {
-          name: 'Acrobatics',
-          bonus: 0,
-          abilityScore: 'dexterity',
-        }, {
-          name: 'Appraise',
-          bonus: 0,
-          abilityScore: 'intelligence'
-        }, {
-          name: 'Bluff',
-          bonus: 0,
-          abilityScore: 'charisma'
-        }, {
-          name: 'Climb',
-          bonus: 0,
-          abilityScore: 'strength'
-        }, {
-          name: 'Craft',
-          bonus: 0,
-          abilityScore: 'intelligence'
-        }, {
-          name: 'Diplomacy',
-          bonus: 0,
-          abilityScore: 'charisma'
-        }, {
-          name: 'Disable Device',
-          bonus: Math.floor(this.characterLevel / 2) + 2,
-          abilityScore: 'dexterity'
-        }, {
-          name: 'Disguise',
-          bonus: 0,
-          abilityScore: 'charisma'
-        }, {
-          name: 'Escape Artist',
-          bonus: 0,
-          abilityScore: 'dexterity'
-        }, {
-          name: 'Fly',
-          bonus: 0,
-          abilityScore: 'dexterity'
-        }, {
-          name: 'Handle Animal',
-          bonus: 0,
-          abilityScore: 'charisma'
-        }, {
-          name: 'Heal',
-          bonus: 0,
-          abilityScore: 'wisdom'
-        }, {
-          name: 'Intimidate',
-          bonus: 0,
-          abilityScore: 'charisma'
-        }, {
-          name: 'Knowledge',
-          bonus: 0,
-          abilityScore: 'intelligence'
-        }, {
-          name: 'Linguistics',
-          bonus: 0,
-          abilityScore: 'intelligence'
-        }, {
-          name: 'Perception',
-          bonus: 0,
-          abilityScore: 'wisdom'
-        }, {
-          name: 'Perform',
-          bonus: 0,
-          abilityScore: 'charisma'
-        }, {
-          name: 'Ride',
-          bonus: 0,
-          abilityScore: 'dexterity'
-        }, {
-          name: 'Sense Motive',
-          bonus: 0,
-          abilityScore: 'wisdom'
-        }, {
-          name: 'Sleight of Hand',
-          bonus: 0,
-          abilityScore: 'dexterity'
-        }, {
-          name: 'Spellcraft',
-          bonus: 0,
-          abilityScore: 'intelligence'
-        }, {
-          name: 'Stealth',
-          bonus: 3,
-          abilityScore: 'dexterity'
-        }, {
-          name: 'Survival',
-          bonus: 0,
-          abilityScore: 'wisdom'
-        }, {
-          name: 'Swim',
-          bonus: 0,
-          abilityScore: 'strength'
-        }, {
-          name: 'Use Magic Device',
-          bonus: 0,
-          abilityScore: 'charisma'
-        }
-      ]
-
-
-      let arrayLength = tempSkills.length
-
-      skillLoop:
-          for (let i = 0; i < arrayLength; i++) {
-            if (this.character.skill[tempSkills[i].name]) {
-
-              let skill = this.character.skill[tempSkills[i].name]
-
-              tempSkills[i].bonus += this.abilityMods[tempSkills[i].abilityScore] + this.morale + skill.ranks + this.luck
-
-              if (skill.bonus === 'Bardic Knowledge') tempSkills[i].bonus += this.character.class[0].level
-
-              if (tempSkills[i].abilityScore === 'strength') tempSkills[i].bonus += this.character.armorClassBonuses[0].armorCheckPenalty
-
-              if (tempSkills[i].name === 'Perception') tempSkills[i].bonus += Math.floor(this.characterLevel / 2) + 2
-
-              for (let job in this.character.class) {
-
-                for (let cSkill in this.character.class[job].classSkills) {
-
-                  if (this.character.class[job].classSkills[cSkill] === tempSkills[i].name) {
-                    tempSkills[i].bonus += 3
-
-                    continue skillLoop;
-                  }
-                }
-              }
-
-
-            } else {
-
-              tempSkills.splice(i, 1)
-
-              arrayLength -= 1
-              i -= 1
-
-            }
-          }
-
-
-      return tempSkills
-    },
-
-    rangedAttackBonus() {
-      return this.attackBonus + this.abilityMods.dexterity - this.deadlyAim
-    },
-    meleeAttackBonus() {
-      return this.attackBonus + this.abilityMods.dexterity - this.powerAttack
-    },
-    damageBonus() {
-      return this.abilityMods.dexterity + this.luck
-    },
-    rangedDamageBonus() {
-      return this.damageBonus + (this.deadlyAim * 2)
-    },
-    meleeDamageBonus() {
-      return this.damageBonus + (this.powerAttack * (2 + this.toggle["Two-Handing"].active))
-    },
-
-    cmb() {
-      return this.attackBonus + this.abilityMods.strength - this.powerAttack
-    },
-    deftManeuvers() {
-      return this.cmb - this.abilityMods.strength + this.abilityMods.dexterity
-    },
-    cmd() {
-      return 10 + this.bab + this.abilityMods.strength + this.abilityMods.dexterity + this.haste
-    },
     channelCount() {
       return 3 + this.abilityMods.charisma + 1 + 2
     },
     channelDamage() {
       return Math.floor((this.character.class['Cleric'].level + 1) / 2)
     },
+
     channelDC() {
       return Math.floor(this.character.class['Cleric'].level / 2) + 10 + this.abilityMods.charisma
     },
@@ -1186,12 +1221,6 @@ export default {
       return 10 + Math.floor(this.characterLevel) + this.abilityMods.charisma
     }
 
-  },
-  mounted() {
-
-    this.character.level = this.character.hitDice
-
-    this.character.classFeatures = this.computeClassFeatures
   },
   methods: {
     makeBonus(bonus) {
@@ -1280,8 +1309,9 @@ export default {
     },
 
     modifyRoll(modifier) {
-      this.cmd = this.cmd + modifier
-
+      for (let x in modifier) {
+        x
+      }
     }
   }
 
