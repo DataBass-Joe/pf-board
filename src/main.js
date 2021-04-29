@@ -1,7 +1,10 @@
 import Vue from 'vue'
+import Vuex from 'vuex'
 import App from './App.vue'
 import VuePostgrest  from 'vue-postgrest'
 import router from './router'
+
+Vue.use(Vuex)
 
 Vue.use(VuePostgrest, {
   apiRoot:  'http://Auroch:3000/'

@@ -5,87 +5,100 @@
     <div id="introduction">
 
       <div>
-        <div id="name"></div>
-        <div id="cr"></div>
+        <div id="name" v-text="introduction.name"></div>
+        <div id="cr" v-text="stat.introduction().cr()"></div>
       </div>
 
-      <div id="xp"></div>
+      <div id="xp" v-text="stat.introduction().xp()"></div>
 
       <div>
-        <div id="race"></div>
-        <div id="class"></div>
-        <div id="level"></div>
-      </div>
-
-      <div>
-        <div id="alignment"></div>
-        <div id="size"></div>
-        <div id="type"></div>
+        <div id="race" v-text="introduction.race"></div>
+        <div id="class" v-text="introduction.class"></div>
+        <div id="level" v-text="stat.introduction().level()"></div>
       </div>
 
       <div>
-        <div id="initiative"></div>
-        <div id="senses"></div>
+        <div id="alignment" v-text="stat.introduction().alignment()"></div>
+        <div id="size" class="capitalize" v-text="stat.introduction().size()"></div>
+        <div id="type" v-text="stat.introduction().type()"></div>
+        <div id="type" v-text="stat.introduction().subtype()"></div>
+
       </div>
 
-      <div id="aura"></div>
+      <div>
+        <div id="initiative" v-text="stat.introduction().initiative()"></div>
+        <div id="senses" v-text="stat.introduction().senses()"></div>
+      </div>
+
+      <div id="aura" v-text="stat.introduction().aura()"></div>
 
     </div>
 
     <div id="defense">
 
-      <div id="ac"></div>
-      <div id="hp"></div>
-      <div id="saving throws"></div>
+      <div id="ac" v-text="stat.defense().ac()"></div>
+      <div id="hp" v-text="stat.defense().hp()"></div>
+      <div id="saving throws">
+        <div id="fortitude" v-text="stat.defense().savingThrows().fortitude()"></div>
+        <div id="reflex" v-text="stat.defense().savingThrows().reflex()"></div>
+        <div id="will" v-text="stat.defense().savingThrows().will()"></div>
+      </div>
       <div>
 
-        <div id="defensive abilities"></div>
-        <div id="dr"></div>
-        <div id="immune"></div>
-        <div id="resist"></div>
-        <div id="sr"></div>
+        <div id="defensive abilities" v-text="stat.defense().defensiveAbilities()"></div>
+        <div id="dr" v-text="stat.defense().dr()"></div>
+        <div id="immune" v-text="stat.defense().immune()"></div>
+        <div id="resist" v-text="stat.defense().resist()"></div>
+        <div id="sr" v-text="stat.defense().sr()"></div>
 
       </div>
-      <div id="weaknesses"></div>
+      <div id="weaknesses" v-text="stat.defense().weaknesses()"></div>
 
 
     </div>
 
     <div id="offense">
 
-      <div id="speed"></div>
-      <div id="melee"></div>
-      <div id="ranged"></div>
+      <div id="speed" v-text="stat.offense().speed()"></div>
+      <div id="melee" v-text="stat.offense().melee()"></div>
+      <div id="ranged" v-text="stat.offense().ranged()"></div>
       <div>
-        <div id="space"></div>
-        <div id="reach"></div>
+        <div id="space" v-text="stat.offense().space()"></div>
+        <div id="reach" v-text="stat.offense().reach()"></div>
       </div>
-      <div id="special attacks"></div>
-      <div id="spell-like abilities"></div>
+      <div id="special attacks" v-text="stat.offense().specialAttacks()"></div>
+      <div id="spell-like abilities" v-text="stat.offense().spellLikeAbilities()"></div>
       <div id="spells">
-        <div id="spells known"></div>
-        <div id="spells prepared"></div>
+        <div id="spells known" v-text="stat.offense().spells().spellsKnown()"></div>
+        <div id="spells prepared" v-text="stat.offense().spells().spellsPrepared()"></div>
       </div>
 
     </div>
 
     <div id="tactics">
-      <div id="before combat"></div>
-      <div id="during combat"></div>
-      <div id="morale"></div>
+      <div id="before combat" v-text="stat.tactics().beforeCombat()"></div>
+      <div id="during combat" v-text="stat.tactics().duringCombat()"></div>
+      <div id="morale" v-text="stat.tactics().morale()"></div>
     </div>
 
     <div id="statistics">
-      <div id="ability scores"></div>
-      <div>
-        <div id="base atk"></div>
-        <div id="cmb"></div>
-        <div id="cmd"></div>
+      <div id="ability scores">
+        <div id="strength" v-text="stat.statistics().abilityScores().strength()"></div>
+        <div id="dexterity" v-text="stat.statistics().abilityScores().dexterity()"></div>
+        <div id="constitution" v-text="stat.statistics().abilityScores().constitution()"></div>
+        <div id="intelligence" v-text="stat.statistics().abilityScores().intelligence()"></div>
+        <div id="wisdom" v-text="stat.statistics().abilityScores().wisdom()"></div>
+        <div id="charisma" v-text="stat.statistics().abilityScores().charisma()"></div>
       </div>
-      <div id="feats"></div>
-      <div id="skills"></div>
-      <div id="languages"></div>
-      <div id="sq"></div>
+      <div>
+        <div id="base atk" v-text="stat.statistics().baseAtk()"></div>
+        <div id="cmb" v-text="stat.statistics().cmb()"></div>
+        <div id="cmd" v-text="stat.statistics().cmd()"></div>
+      </div>
+      <div id="feats" v-text="stat.statistics().feats()"></div>
+      <div id="skills" v-text="stat.statistics().skills()"></div>
+      <div id="languages" v-text="stat.statistics().languages()"></div>
+      <div id="sq" v-text="stat.statistics().sq()"></div>
 
 
     </div>
@@ -100,9 +113,9 @@
 
     <div id="ecology">
 
-      <div id="environment"></div>
-      <div id="organization"></div>
-      <div id="treasure"></div>
+      <div id="environment" v-text="stat.ecology().environment()"></div>
+      <div id="organization" v-text="stat.ecology().organization()"></div>
+      <div id="treasure" v-text="stat.ecology().treasure()"></div>
 
     </div>
 
@@ -123,7 +136,16 @@ export default {
   name: "John",
   // components: {SpellList, FullText, Info},
   data() {
-    return {}
+    return {
+      introduction: {
+        name: "John",
+        race: ['half-elf'],
+        class: [{
+          name: 'Unchained Rogue',
+          level: 1
+        }]
+      }
+    }
   },
   computed: {
 
@@ -132,68 +154,223 @@ export default {
 
 
         //INTRODUCTION
-        name() {
-          return 'John'
+        introduction() {
+          return {
+
+            cr() {
+              return 'bar'
+            },
+            xp() {
+              return 'bar'
+            },
+            level() {
+              return this.$parent.$parent.introduction.class.reduce((accumulator, cur) => accumulator + cur.level, 0);
+            },
+            alignment() {
+              return 'LN'
+            },
+            size() {
+              return 'medium'
+            },
+            type() {
+              return 'humanoid'
+            },
+            subtype() {
+              return ['elf', 'human']
+            },
+            initiative() {
+              return 'bar'
+            },
+            senses() {
+              return 'bar'
+            },
+            aura() {
+              return 'foo'
+            }
+          }
         },
-        cr() {
-          return 'bar'
+
+
+        //DEFENSE
+        defense() {
+          return {
+            ac() {
+              return 'bar'
+            },
+            hp() {
+              return 'bar'
+            },
+            savingThrows() {
+              return {
+                fortitude() {
+                  return 'bar'
+                },
+                reflex() {
+                  return 'bar'
+                },
+                will() {
+                  return 'bar'
+                },
+              }
+            },
+            defensiveAbilities() {
+              return 'foo'
+            },
+            dr() {
+              return 'foo'
+            },
+            immune() {
+              return 'foo'
+            },
+            resist() {
+              return 'foo'
+            },
+            sr() {
+              return 'foo'
+            },
+            weaknesses() {
+              return 'foo'
+            }
+          }
         },
-        xp() {
-          return 'bar'
+
+
+        //OFFENSE
+        offense() {
+          return {
+            speed() {
+              return '30'
+            },
+            melee() {
+              return 'bar'
+            },
+            ranged() {
+              return 'bar'
+            },
+            space() {
+              return '5'
+            },
+            reach() {
+              return '5'
+            },
+            specialAttacks() {
+              return 'bar'
+            },
+            spellLikeAbilities() {
+              return 'bar'
+            },
+            spells() {
+              return {
+                spellsKnown() {
+                  return 'bar'
+                },
+                spellsPrepared() {
+                  return 'bar'
+                }
+              }
+            }
+          }
         },
-        race() {
-          return 'bar'
+
+
+        //TACTICS
+        tactics() {
+          return {
+            beforeCombat() {
+              return 'bar'
+            },
+            duringCombat() {
+              return 'bar'
+            },
+            morale() {
+              return 'bar'
+            }
+          }
         },
-        class() {
-          return 'bar'
+
+
+        //STATISTICS
+        statistics() {
+          return {
+            abilityScores() {
+              return {
+                strength() {
+                  return 'bar'
+                },
+                dexterity() {
+                  return 'bar'
+                },
+                constitution() {
+                  return 'bar'
+                },
+                intelligence() {
+                  return 'bar'
+                },
+                wisdom() {
+                  return 'bar'
+                },
+                charisma() {
+                  return 'bar'
+                }
+              }
+            },
+            baseAtk() {
+              return 'bar'
+            },
+            cmb() {
+              return 'bar'
+            },
+            cmd() {
+              return 'bar'
+            },
+            feats() {
+              return ['bar']
+            },
+            skills() {
+              return [{foo: 'bar'}]
+            },
+            languages() {
+              return ['bar']
+            },
+            sq() {
+              return 'bar'
+            }
+          }
         },
-        level() {
-          return 'bar'
-        },
-        alignment() {
-          return 'bar'
-        },
-        size() {
-          return 'bar'
-        },
-        type() {
-          return 'bar'
-        },
-        initiative() {
-          return 'bar'
-        },
-        senses() {
-          return 'bar'
-        },
-        aura() {
+
+
+        //SPECIAL ABILITIES
+        specialAbilities() {
           return 'bar'
         },
 
-        //DEFENSE
-        ac() {
+
+        //GEAR
+        gear() {
           return 'bar'
         },
-        hp() {
-          return 'bar'
+
+
+        //ECOLOGY
+        ecology() {
+          return {
+            environment() {
+              return 'bar'
+            },
+            organization() {
+              return 'bar'
+            },
+            treasure() {
+              return 'bar'
+            }
+          }
         },
-        savingThrows() {
+
+
+        //MISCELLANEOUS
+        miscellaneous() {
           return 'bar'
-        },
-        foo() {
-          return 'bar'
-        },
-        foo() {
-          return 'bar'
-        },
-        foo() {
-          return 'bar'
-        },
-        foo() {
-          return 'bar'
-        },
-        foo() {
-          return 'bar'
-        },
+        }
 
 
       }
@@ -229,257 +406,15 @@ export default {
 
 
   },
-  methods: {
-    makeBonus(bonus) {
-      let text = ''
-      if (bonus < 0) {
-        text = bonus
-      } else {
-        text = '+' + bonus
-      }
-      return text
-    },
-    makeList(myObj, keys) {
-
-      let list = '';
-
-      let size = Object.keys(myObj).length;
-
-
-      for (let i = 0; i < size; i++) {
-
-
-        if (keys) {
-
-          let keySize = keys.length
-
-
-          for (let key = 0; key < keySize; key++) {
-
-            if (typeof myObj[i][keys[key]] == 'object') {
-
-              list += this.makeList(myObj[i][keys[key]])
-
-              if (key === keySize - 1) {
-                continue
-              }
-
-              list += ' '
-
-              continue
-
-            }
-
-            list += myObj[i][keys[key]]
-
-            if (key === keySize - 1) {
-              continue
-            }
-
-            list += ' '
-          }
-
-        } else {
-          list += myObj[i]
-        }
-        if (i === size - 1) {
-          continue
-        }
-
-        list += ', '
-
-      }
-
-
-      return list
-
-    },
-
-    closeInfo() {
-      this.spellName = null
-    },
-
-    changeSpell(value) {
-      this.spellName = value
-    },
-    changeInfo(value) {
-      this.abilityName = value
-    },
-    bgColor(action) {
-      if (action === 0) {
-        return 'rgba(0,0,0,.25)'
-      } else if (action === 1) {
-        return 'rgba(255,0,0,.25)'
-      } else if (action === 2) {
-        return 'rgba(0,0,255,.25)'
-      }
-    },
-
-    modifyRoll(modifier) {
-      for (let x in modifier) {
-        x
-      }
-    }
-  }
+  methods: {}
 
 }
 </script>
 
 <style scoped lang="scss">
 
-#page {
-  display: flex;
-  flex-direction: row;
-  text-shadow: 2px 2px 4px #000000;
-  color: white;
-  text-align: left;
-  align-items: baseline;
-  padding: 2vmin;
-  background-image: url("../assets/Immogen_single.png");
-  background-repeat: no-repeat;
-
-  background-size: 100vmax;
-  background-position: 50% 30%;
-  background-attachment: fixed;
-  justify-content: space-between;
-
-}
-
-
-#charName {
-  font-size: 5vmin;
-}
-
-hr {
-  width: 100%
-}
-
-p {
-  margin: .5vmin;
-}
-
 .capitalize {
   text-transform: capitalize;
 }
 
-#sheet {
-
-  display: flex;
-  flex-direction: column;
-  min-width: 50vw;
-
-}
-
-#info {
-
-  display: flex;
-  flex-direction: column;
-  min-width: 30vw;
-
-
-}
-
-#buttons {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-
-
-}
-
-.toggle {
-
-  display: flex;
-  background-color: rgba(0, 0, 0, .25);
-
-  margin: 1vmin;
-  padding: 1vmin;
-  align-items: center;
-
-
-}
-
-
-@media only screen and (max-width: 1100px) {
-  /* For mobile phones: */
-  [id*="page"] {
-    flex-wrap: wrap;
-  }
-
-  [id*="sheet"] {
-    width: 100%;
-  }
-
-  [id*="info"] {
-    width: 100%;
-  }
-}
-
-span {
-  width: clamp(16px, 100%, 50vmin);
-}
-
-
-/* The switch - the box around the slider */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-}
-
-/* Hide default HTML checkbox */
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-/* The slider */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-input:checked + .slider {
-  background-color: #2196F3;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 34px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
-}
 </style>
