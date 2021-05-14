@@ -440,7 +440,7 @@ export default {
                 'Imbue with Spell Ability',
                 'Threefold Aspect',
                 'Wall of Fire',
-                '?'
+                'Freedom of Movement'
 
 
               ],
